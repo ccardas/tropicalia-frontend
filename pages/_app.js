@@ -1,7 +1,25 @@
+import Head from "next/head";
+import { Provider } from "next-auth/client";
+
 import '../styles/globals.css'
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+import "antd/dist/antd.css";
 
-export default MyApp
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Provider
+        session={pageProps.session}
+        options={{
+          basePath: `/api/auth`,
+        }}
+      >
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>MARTE</title>
+        </Head>
+        <Component {...pageProps} />
+      </Provider>
+    </>
+  );
+}
