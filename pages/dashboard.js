@@ -1,7 +1,7 @@
 import BaseLayout from '../components/layout';
 import { PageHeader } from 'antd';
 
-const Home = () => {
+const Dashboard = () => {
     return (
         <BaseLayout>
             <PageHeader className="site-page-header"></PageHeader>
@@ -11,4 +11,4 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default Dashboard;

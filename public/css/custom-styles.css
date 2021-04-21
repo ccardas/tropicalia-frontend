@@ -1,0 +1,11 @@
+@import 'antd/dist/antd.css';
+
+.ant-menu-item{
+    color: #5b8c00;
+    border-bottom: 2px solid #5b8c00;
+}
+
+.ant-menu-item-selected {
+    color: #5b8c00;
+    border-bottom: 2px solid #5b8c00;
+}
