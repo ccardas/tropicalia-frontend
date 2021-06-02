@@ -23,7 +23,7 @@ const options = {
         if (user) {
           return Promise.resolve(user);
         } else {
-          return Promise.reject(new Error('error message'))
+          return Promise.reject(new Error("error message"));
         }
       },
     }),

@@ -1,11 +1,9 @@
 import Head from "next/head";
 import { Provider } from "next-auth/client";
 
-import '../styles/globals.css'
-import '../public/css/custom-styles.css'
-
 import "antd/dist/antd.css";
-
+import "../styles/globals.css";
+import "../public/css/custom-styles.css";
 
 export default function MyApp({ Component, pageProps }) {
   return (
