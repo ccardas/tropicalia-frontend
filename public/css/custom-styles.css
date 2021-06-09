@@ -1,17 +1,17 @@
 @import 'antd/dist/antd.css';
 
 .ant-menu-item{
-    color: #5b8c00;
-    border-bottom: 2px solid #5b8c00;
+    color: #07A745;
+    border-bottom: 2px solid #07A745;
 }
 
 .ant-menu-item-selected {
-    color: #5b8c00;
-    border-bottom: 2px solid #5b8c00;
+    color: #00BB48;
+    border-bottom: 2px solid #07A745;
 }
 
 #predButton {
-    background-color: #5b8c00;
+    background-color: #07A745;
     color: #ffffff;
     width: 100%;
 }

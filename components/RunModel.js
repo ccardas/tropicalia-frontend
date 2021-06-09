@@ -12,7 +12,7 @@ import {
   notification,
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState, encodedURIComponent } from "react";
 
 const { Title, Text } = Typography;
 const { SubMenu } = Menu;
@@ -107,9 +107,38 @@ const RunModel = () => {
         description: "Por favor, seleccione una configuración válida",
       });
     } else {
-      // TODO
+      if (!checkModel(model, cropType)){
+        notification["error"]({
+          message: "El modelo seleccionado no está entrenado",
+          description: "Por favor, entrene el modelo en la sección de entrenamiento.",
+        }); 
+      } else {
+        // TODO
+      }
     }
   };
+
+  const checkModel = (m, ct) => {
+    if (m && ct) {
+      //const response = fetch(`http://0.0.0.0:8001/`, {
+      const response = fetch(`http://0.0.0.0:8001/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`, {
+        method: "GET",
+        header: {'Content-Type': 'application/json'}
+      });
+      const isTrained = response;
+      if (isTrained){
+        // TODO: if the selected model is trained, notify the user. 
+      } else {
+        // TODO: if the selected model is not trained, notify the user
+      }
+
+      return isTrained;
+    }
+  }
+
+  useEffect(() => {
+    checkModel(model, cropType)
+  }, [model, cropType])
 
   return (
     <>

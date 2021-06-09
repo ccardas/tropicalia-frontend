@@ -83,12 +83,58 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
+
+
+const expandedRow = (dailyData, handleDelete) => {
+  const columns = [
+    {
+      title: "id",
+      dataIndex: "uid",
+    },
+    { title: 'Día', 
+      dataIndex: 'date', 
+      editable: true 
+    },
+    { title: 'Tipo de cultivo', 
+      dataIndex: 'crop_type', 
+      editable: true 
+    },
+    { title: 'Kilos', 
+      dataIndex: 'yield_values', 
+      editable: true 
+    },
+    {
+      title: "Operación",
+      dataIndex: "operation",
+      render: (_, record) =>
+        <Popconfirm
+          title="¿Está seguro?"
+          onConfirm={() => handleDelete(record.uid)}
+        >
+          <a>Delete</a>
+        </Popconfirm>
+    },
+  ];
+
+  const data = [];
+  for (let i = 0; i < dailyData.length; ++i) {
+    data.push({
+      uid: dailyData[i].uid,
+      date: dailyData[i].date,
+      crop_type: dailyData[i].crop_type,
+      yield_values: dailyData[i].yield_values,
+    });
+  }
+  return <Table columns={columns} dataSource={data} />;
+};
+
+
+
 const EditableTable = () => {
   const tableColumns = [
     {
       title: "id",
       dataIndex: "uid",
-      editable: true,
     },
     {
       title: "Fecha",
@@ -105,36 +151,49 @@ const EditableTable = () => {
       dataIndex: "yield_values",
       editable: true,
     },
-    {
-      title: "Operación",
-      dataIndex: "operation",
-      render: (_, record) =>
-        state.dataSource.length >= 1 ? (
-          <Popconfirm
-            title="¿Está seguro?"
-            onConfirm={() => handleDelete(record.uid)}
-          >
-            <a>Delete</a>
-          </Popconfirm>
-        ) : null,
-    },
   ];
   const [state, setState] = useState({
-    dataSource: [
+    monthlyData: [
       {
         uid: 1,
-        date: "2010-10-01",
-        crop_type: "Aguacate Bacon",
+        date: "2010-10",
+        crop_type: "Mango Keitt",
         yield_values: 14,
       },
       {
         uid: 2,
-        date: "2013-10-01",
+        date: "2013-10",
         crop_type: "Mango Tommy Atkins",
         yield_values: 9,
       },
     ],
-    count: 2,
+    dailyData: [
+      {
+        uid: 1,
+        date: "2010-10-14",
+        crop_type: "Mango Keitt",
+        yield_values: 9,
+      },
+      {
+        uid: 2,
+        date: "2010-10-23",
+        crop_type: "Mango Keitt",
+        yield_values: 5,
+      },
+      {
+        uid: 3,
+        date: "2013-10-01",
+        crop_type: "Mango Tommy Atkins",
+        yield_values: 4,
+      },
+      {
+        uid: 4,
+        date: "2013-10-10",
+        crop_type: "Mango Tommy Atkins",
+        yield_values: 5,
+      },
+    ],
+    count: 4,
   });
 
   const handleDelete = (uid) => {
@@ -173,7 +232,8 @@ const EditableTable = () => {
     // TODO
   };
 
-  const dataSource = state.dataSource;
+  const dataSourceMontly = state.monthlyData;
+  const dataSourceDaily = expandedRow(state.dailyData, handleDelete);
   const components = {
     body: {
       row: EditableRow,
@@ -213,7 +273,8 @@ const EditableTable = () => {
         components={components}
         rowClassName={() => "editable-row"}
         bordered
-        dataSource={dataSource}
+        expandable={{ dataSourceDaily }}
+        dataSource={dataSourceMontly}
         columns={columns}
       />
     </>

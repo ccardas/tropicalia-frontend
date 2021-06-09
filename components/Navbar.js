@@ -28,7 +28,7 @@ const Navbar = () => {
             <Col>
               <div className="logo">
                 <img
-                  src="/logo.svg"
+                  src="/tropical-ia-02.svg"
                   alg="TROPICAL-IA logo"
                   className={styles.logo}
                 ></img>
