@@ -26,13 +26,15 @@ const Navbar = () => {
         <Col>
           <Row gutter={25}>
             <Col>
-              <div className="logo">
-                <img
-                  src="/tropical-ia-02.svg"
-                  alg="TROPICAL-IA logo"
-                  className={styles.logo}
-                ></img>
-              </div>
+              <Link href="/">
+                <a className="logo">
+                  <img
+                    src="/tropical-ia-02.svg"
+                    alg="TROPICAL-IA logo"
+                    className={styles.logo}
+                  ></img>
+                </a>
+              </Link>
             </Col>
             <Col>
               <Menu mode="horizontal" defaultSelectedKeys={router.pathname}>

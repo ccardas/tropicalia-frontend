@@ -1,7 +1,8 @@
-import BaseLayout from "../components/Layout";
 import AccessDenied from "../components/AccessDenied";
-import RunModel from "../components/RunModel";
+import BaseLayout from "../components/Layout";
 import Dataset from "../components/Dataset";
+import RunModel from "../components/RunModel";
+import TrainModel from "../components/TrainModel";
 
 import { useSession } from "next-auth/client";
 import { Divider, PageHeader, Typography, Tabs } from "antd";
@@ -32,7 +33,7 @@ const Dashboard = () => {
         </TabPane>
         <TabPane tab="Entrenar un algoritmo" key="2">
           <Text italic="true">
-            Work in progress...
+            <TrainModel />
           </Text>
         </TabPane>
         <TabPane tab="Visualización de los datos" key="3">

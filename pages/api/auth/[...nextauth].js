@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import axios from "axios";
 
 const options = {
   providers: [
@@ -10,6 +11,21 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
+        // const user = await axios({
+        //   method: "post",
+        //   url: "http://0.0.0.0:8001/api/v1/auth/login",
+        //   headers: {
+        //     accept: '*/*',
+        //     'Content-Type': 'application/json'
+        //   },
+        //   data: {
+        //     user: {
+        //       username: credentials.username,
+        //       password: credentials.password
+        //     }
+        //   }
+        // });
+
         let user;
 
         if (credentials.username == "demo" && credentials.password == "demo") {
@@ -21,9 +37,9 @@ const options = {
         }
 
         if (user) {
-          return Promise.resolve(user);
+          return user;
         } else {
-          return Promise.reject(new Error("error message"));
+          return null;
         }
       },
     }),

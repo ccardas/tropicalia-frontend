@@ -17,7 +17,7 @@ import { useEffect, useState, encodedURIComponent } from "react";
 const { Title, Text } = Typography;
 const { SubMenu } = Menu;
 
-const RunModel = () => {
+const TrainModel = () => {
   const modelSelection = (
     <Menu onClick={onClickModel}>
       <Menu.ItemGroup>
@@ -75,20 +75,8 @@ const RunModel = () => {
   );
 
   const [session] = useSession();
-  const [value, setValue] = useState(1);
   const [model, setModel] = useState("por seleccionar");
   const [cropType, setCropType] = useState("por seleccionar");
-
-  const radioStyle = {
-    display: "block",
-    height: "30px",
-    lineHeight: "30px",
-  };
-
-  function onChange(e) {
-    console.log("radio checked", e.target.value);
-    setValue(e.target.value);
-  }
 
   function onClickModel(e) {
     console.log("model selected: ", e.key);
@@ -99,25 +87,6 @@ const RunModel = () => {
     console.log("crop selected: ", e.key);
     setCropType(e.key);
   }
-
-  const doPrediction = () => {
-    if (model == "por seleccionar" || cropType == "por seleccionar") {
-      notification["error"]({
-        message: "Se ha producido un error",
-        description: "Por favor, seleccione una configuración válida",
-      });
-    } else {
-      if (!checkModel(model, cropType)) {
-        notification["error"]({
-          message: "El modelo seleccionado no está entrenado",
-          description:
-            "Por favor, entrene el modelo en la sección de entrenamiento.",
-        });
-      } else {
-        // TODO
-      }
-    }
-  };
 
   const checkModel = (m, ct) => {
     if (m && ct) {
@@ -147,17 +116,14 @@ const RunModel = () => {
   return (
     <>
       <Space direction="vertical">
-        <Title level={3}>
-          Realizar las predicciones de los cultivos de Mango y Aguacate.
-        </Title>
+        <Title level={3}>Entrenar los modelos para los cultivos.</Title>
         <Text>
-          Por favor, seleccione un modelo y un conjunto de datos para recibir un
-          resultado.
+          Por favor, seleccione un modelo y un conjunto de datos para entrenar
         </Text>
         <Text underline>
-          Nota: En caso que el modelo seleccionado no esté previamente
-          entrenado, esto tomará un tiempo, especialmente el modelo SARIMA, que
-          ronda los 30-40 minutos de entrenamiento.
+          Nota: El entrenamiento de los modelos puede tomar una cantidad de
+          tiempo considerable. Especialmente el modelo SARIMA, que ronda los
+          30-40 minutos de entrenamiento.
         </Text>
 
         <Row justify="space-around" style={{ marginTop: "1%" }}>
@@ -185,27 +151,9 @@ const RunModel = () => {
             </Dropdown>
           </Col>
         </Row>
-
-        <Radio.Group onChange={onChange} value={value}>
-          <Radio style={radioStyle} value={1}>
-            Predicción anual
-          </Radio>
-          <Radio style={radioStyle} value={2}>
-            Predicción del siguiente mes
-          </Radio>
-        </Radio.Group>
-        <Title level={5}>La configuración seleccionada es la siguiente:</Title>
-        <Text>- Modelo: {model}</Text>
-        <Text>- Cultivo: {cropType}</Text>
-        <Button id="predButton" onClick={doPrediction}>
-          Predecir
-        </Button>
       </Space>
-      <Divider />
-
-      {/* TODO */}
     </>
   );
 };
 
-export default RunModel;
+export default TrainModel;
