@@ -8,9 +8,8 @@ const About = () => {
   return (
     <BaseLayout>
       <PageHeader className="site-page-header"></PageHeader>
-
-      <Row justify="space-around">
-        <Col>
+      <Row justify="space-around" gutter={[48, 24]}>
+        <Col sm={8} xs={24}>
           <a href="https://www.trops.es">
             <Card
               style={{ padding: "1em" }}
@@ -23,7 +22,7 @@ const About = () => {
             </Card>
           </a>
         </Col>
-        <Col>
+        <Col sm={8} xs={24}>
           <a href="https://khaos.uma.es">
             <Card
               style={{ padding: "1em" }}
@@ -39,7 +38,7 @@ const About = () => {
             </Card>
           </a>
         </Col>
-        <Col>
+        <Col sm={8} xs={24}>
           <a href="https://uma.es">
             <Card
               style={{ padding: "1em" }}

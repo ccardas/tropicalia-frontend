@@ -1,83 +1,126 @@
 import { useSession } from "next-auth/client";
 import {
-  Menu,
-  Dropdown,
   Row,
   Col,
-  Divider,
   Button,
   Space,
   Typography,
   Radio,
+  Select,
+  Cascader,
+  Alert,
   notification,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { useEffect, useState, encodedURIComponent } from "react";
 
-const { Title, Text } = Typography;
-const { SubMenu } = Menu;
+const { Title, Paragraph } = Typography;
+const { Option } = Select;
+
+const cropTypesOptions = [
+  {
+    value: 'Mango',
+    label: 'Mango',
+    children: [
+      {
+        value: 'Mango Genérico',
+        label: 'Mango Genérico'
+      },
+      {
+        value: 'Mango Irwin',
+        label: 'Mango Irwin'
+      },
+      {
+        value: 'Mango Keitt',
+        label: 'Mango Keitt'
+      },
+      {
+        value: 'Mango Kent',
+        label: 'Mango Kent'
+      },
+      {
+        value: 'Mango Manzanillo',
+        label: 'Mango Manzanillo'
+      },
+      {
+        value: 'Mango Osteen',
+        label: 'Mango Osteen'
+      },
+
+      {
+        value: 'Mango Palmer',
+        label: 'Mango Palmer'
+      },
+
+      {
+        value: 'Mango Sensation',
+        label: 'Mango Sensation'
+      },
+
+      {
+        value: 'Mango Tommy Atkins',
+        label: 'Mango Tommy Atkins'
+      },
+    ],
+  },
+  {
+    value: 'Aguacate',
+    label: 'Aguacate',
+    children: [
+      {
+        value: 'Aguacate Bacon',
+        label: 'Aguacate Bacon'
+      },
+      {
+        value: 'Aguacate Cocktail',
+        label: 'Aguacate Cocktail'
+      },
+      {
+        value: 'Aguacate Fuerte',
+        label: 'Aguacate Fuerte'
+      },
+      {
+        value: 'Aguacate Gween',
+        label: 'Aguacate Gween'
+      },
+      {
+        value: 'Aguacate Hass',
+        label: 'Aguacate Hass'
+      },
+      {
+        value: 'Aguacate Lamb Hass',
+        label: 'Aguacate Lamb Hass'
+      },
+      {
+        value: 'Aguacate Maluma Hass',
+        label: 'Aguacate Maluma Hass'
+      },
+      {
+        value: 'Aguacate Melón',
+        label: 'Aguacate Melón'
+      },
+      {
+        value: 'Aguacate Pinkerton',
+        label: 'Aguacate Pinkerton'
+      },
+      {
+        value: 'Aguacate Reed',
+        label: 'Aguacate Reed'
+      },
+      {
+        value: 'Aguacate Zutano',
+        label: 'Aguacate Zutano'
+      },
+    ],
+  },
+];
 
 const RunModel = () => {
-  const modelSelection = (
-    <Menu onClick={onClickModel}>
-      <Menu.ItemGroup>
-        <Menu.Item key="SARIMA">SARIMA</Menu.Item>
-        <Menu.Item key="SARIMAX">SARIMAX</Menu.Item>
-        <Menu.Item key="Prophet">Prophet</Menu.Item>
-        <Menu.Item key="LSTM">LSTM</Menu.Item>
-        <Menu.Item key="HWES">HWES</Menu.Item>
-        <Menu.Item key="XGBoost">XGBoost</Menu.Item>
-        <Menu.Item key="SVM">SVM</Menu.Item>
-        <Menu.Item key="%">Todos los modelos</Menu.Item>
-      </Menu.ItemGroup>
-    </Menu>
-  );
-
-  const modelSelectionClient = (
-    <Menu onClick={onClickModel}>
-      <Menu.ItemGroup>
-        <Menu.Item key="SARIMA">SARIMA</Menu.Item>
-        <Menu.Item key="Prophet">Prophet</Menu.Item>
-        <Menu.Item key="%">Todos los modelos</Menu.Item>
-      </Menu.ItemGroup>
-    </Menu>
-  );
-
-  const cropSelection = (
-    <Menu onClick={onClickCropType}>
-      <SubMenu key="Aguacate" title="Aguacate">
-        <Menu.Item key="Aguacate Bacon">Aguacate Bacon</Menu.Item>
-        <Menu.Item key="Aguacate Cocktail">Aguacate Cocktail</Menu.Item>
-        <Menu.Item key="Aguacate Fuerte">Aguacate Fuerte</Menu.Item>
-        <Menu.Item key="Aguacate Gween">Aguacate Gween</Menu.Item>
-        <Menu.Item key="Aguacate Hass">Aguacate Hass</Menu.Item>
-        <Menu.Item key="Aguacate Lamb Hass">Aguacate Lamb Hass</Menu.Item>
-        <Menu.Item key="Aguacate Maluma Hass">Aguacate Maluma Hass</Menu.Item>
-        <Menu.Item key="Aguacate Melón">Aguacate Melón</Menu.Item>
-        <Menu.Item key="Aguacate Pinkerton">Aguacate Pinkerton</Menu.Item>
-        <Menu.Item key="Aguacate Reed">Aguacate Reed</Menu.Item>
-        <Menu.Item key="Aguacate Zutano">Aguacate Zutano</Menu.Item>
-        <Menu.Item key="Aguacate">Todas las variedades</Menu.Item>
-      </SubMenu>
-      <SubMenu title="Mango">
-        <Menu.Item key="Mango Genérico">Mango Genérico</Menu.Item>
-        <Menu.Item key="Mango Irwin">Mango Irwin</Menu.Item>
-        <Menu.Item key="Mango Keitt">Mango Keitt</Menu.Item>
-        <Menu.Item key="Mango Kent">Mango Kent</Menu.Item>
-        <Menu.Item key="Mango Manzanillo">Mango Manzanillo</Menu.Item>
-        <Menu.Item key="Mango Osteen">Mango Osteen</Menu.Item>
-        <Menu.Item key="Mango Palmer">Mango Palmer</Menu.Item>
-        <Menu.Item key="Mango Sensation">Mango Sensation</Menu.Item>
-        <Menu.Item key="Mango Tommy Atkins">Mango Tommy Atkins</Menu.Item>
-        <Menu.Item key="Mango">Todas las variedades</Menu.Item>
-      </SubMenu>
-    </Menu>
-  );
 
   const [session] = useSession();
   const [value, setValue] = useState(1);
-  const [model, setModel] = useState("por seleccionar");
-  const [cropType, setCropType] = useState("por seleccionar");
+  const [model, setModel] = useState();
+  const [cropType, setCropType] = useState();
+  const [message, setMessage] = useState();
 
   const radioStyle = {
     display: "block",
@@ -90,99 +133,97 @@ const RunModel = () => {
     setValue(e.target.value);
   }
 
-  function onClickModel(e) {
-    console.log("model selected: ", e.key);
-    setModel(e.key);
+  function onSelectModel(e) {
+    console.log("model selected: ", e);
+    setModel(e);
   }
 
-  function onClickCropType(e) {
-    console.log("crop selected: ", e.key);
-    setCropType(e.key);
+  function onSelectCropType(e) {
+    console.log("crop selected: ", e);
+    setCropType(e[e.length - 1]);
   }
 
   const doPrediction = () => {
-    if (model == "por seleccionar" || cropType == "por seleccionar") {
+    if (!doCheckModel(model, cropType)) {
       notification["error"]({
-        message: "Se ha producido un error",
-        description: "Por favor, seleccione una configuración válida",
+        message: "El modelo seleccionado no está entrenado",
+        description:
+          "Por favor, entrene el modelo en la sección de entrenamiento.",
       });
     } else {
-      if (!checkModel(model, cropType)) {
-        notification["error"]({
-          message: "El modelo seleccionado no está entrenado",
-          description:
-            "Por favor, entrene el modelo en la sección de entrenamiento.",
-        });
-      } else {
-        // TODO
-      }
+      // TODO
     }
   };
 
-  const checkModel = (m, ct) => {
-    if (m && ct) {
-      //const response = fetch(`http://0.0.0.0:8001/`, {
-      const response = fetch(
-        `http://0.0.0.0:8001/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
-        {
-          method: "GET",
-          header: { "Content-Type": "application/json" },
-        }
-      );
-      const isTrained = response;
-      if (isTrained) {
-        // TODO: if the selected model is trained, notify the user.
-      } else {
-        // TODO: if the selected model is not trained, notify the user
+  const doCheckModel = async (m, ct) => {
+    await fetch(
+      `http://0.0.0.0:8001/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
+      {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.accessToken}`
+        },
       }
-
-      return isTrained;
-    }
+    ).then((res) => {
+      if ((res.ok) || (res.status == 404)) { 
+        return res.json();
+      }
+      return res.text().then(text => {throw new Error(text)})
+    })
+    .then((result) => { 
+      if (result.detail == "The specified combination has not been trained.") {
+        const msg = `La combinación especificada no ha sido entrenada.`;
+        setMessage(msg); 
+      } else {
+        const msg = `La combinación seleccionada está entrenada con datos hasta la fecha: ${result.last_date}`;
+        setMessage(msg); 
+      }
+    })
+    .catch((err) => {
+      notification["error"]({
+        message: "Ha ocurrido un error al conectarse con el servidor",
+        description: `${err}`,
+      });
+    });
   };
 
   useEffect(() => {
-    checkModel(model, cropType);
+    if (model && cropType) {
+      doCheckModel(model, cropType);
+    }
   }, [model, cropType]);
 
   return (
     <>
-      <Space direction="vertical">
+      <Space direction="vertical" size={10}>
         <Title level={3}>
-          Realizar las predicciones de los cultivos de Mango y Aguacate.
+          Nueva predicción de los cultivos de Mango y Aguacate
         </Title>
-        <Text>
+        <Paragraph>
           Por favor, seleccione un modelo y un conjunto de datos para recibir un
           resultado.
-        </Text>
-        <Text underline>
-          Nota: En caso que el modelo seleccionado no esté previamente
-          entrenado, esto tomará un tiempo, especialmente el modelo SARIMA, que
-          ronda los 30-40 minutos de entrenamiento.
-        </Text>
-
-        <Row justify="space-around" style={{ marginTop: "1%" }}>
-          <Col style={{ width: "49%" }}>
-            {session.user.name == "Demo" ? (
-              <Dropdown overlay={modelSelection}>
-                <Button className="ant-dropdown-link" style={{ width: "100%" }}>
-                  Seleccione un modelo <DownOutlined />
-                </Button>
-              </Dropdown>
-            ) : (
-              <Dropdown overlay={modelSelectionClient}>
-                <Button className="ant-dropdown-link" style={{ width: "100%" }}>
-                  Seleccione un modelo <DownOutlined />
-                </Button>
-              </Dropdown>
-            )}
+        </Paragraph>
+        <Paragraph>
+          <Alert
+            message="El entrenamiento de un modelo puede llevar varios minutos en el caso de que no esté previamente
+            entrenado."
+            type="warning"
+            showIcon
+            closable
+          />
+        </Paragraph>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Select placeholder="Selecciona un modelo" style={{ width: '100%' }} onChange={m => onSelectModel(m)}>
+              <Option value="SARIMA">SARIMA</Option>
+              <Option value="Prophet">Prophet</Option>
+              <Option value="%">Todos los modelos</Option>
+            </Select>
           </Col>
-          <Divider type="vertical" style={{ border: 0 }} />
-          <Col style={{ width: "49%" }}>
-            <Dropdown overlay={cropSelection}>
-              <Button className="ant-dropdown-link" style={{ width: "100%" }}>
-                Elija el tipo de cultivo <DownOutlined />
-              </Button>
-            </Dropdown>
+          <Col span={12}>
+            <Cascader placeholder="Elija el tipo de cultivo"
+              style={{ width: '100%' }} options={cropTypesOptions} onChange={c => onSelectCropType(c)} />
           </Col>
         </Row>
 
@@ -194,16 +235,15 @@ const RunModel = () => {
             Predicción del siguiente mes
           </Radio>
         </Radio.Group>
-        <Title level={5}>La configuración seleccionada es la siguiente:</Title>
-        <Text>- Modelo: {model}</Text>
-        <Text>- Cultivo: {cropType}</Text>
-        <Button id="predButton" onClick={doPrediction}>
+
+        { message && (
+          <Alert message={message} type="info" />
+        )}
+
+        <Button type="primary" onClick={doPrediction} block disabled={!model || !cropType}>
           Predecir
         </Button>
       </Space>
-      <Divider />
-
-      {/* TODO */}
     </>
   );
 };

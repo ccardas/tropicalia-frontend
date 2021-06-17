@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/client";
 import {
   Table,
   Input,
@@ -9,8 +10,57 @@ import {
   Divider,
   Row,
   Col,
+  notification
 } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
+
+// const [data, setData] = useState([
+//   {
+//     key: "2010-10",
+//     date: "2010-10",
+//     crop_type: "Mango Keitt",
+//     yield_values: 14,
+//     children: [
+//       {
+//         key: 1,
+//         uid: 1,
+//         date: "2010-10-14",
+//         crop_type: "Mango Keitt",
+//         yield_values: 9,
+//       },
+//       {
+//         key: 2,
+//         uid: 2,
+//         date: "2010-10-23",
+//         crop_type: "Mango Keitt",
+//         yield_values: 5,
+//       },
+//     ],
+//   },
+//   {
+//     key: 15,
+//     date: "2013-10",
+//     crop_type: "Mango Tommy Atkins",
+//     yield_values: 9,
+//     children: [
+//       {
+//         key: 3,
+//         uid: 3,
+//         date: "2013-10-01",
+//         crop_type: "Mango Tommy Atkins",
+//         yield_values: 4,
+//       },
+//       {
+//         key: 4,
+//         uid: 4,
+//         date: "2013-10-10",
+//         crop_type: "Mango Tommy Atkins",
+//         yield_values: 5,
+//       },
+//     ],
+//   },
+// ]);
+
 
 const EditableCell = ({
   editing,
@@ -48,79 +98,10 @@ const EditableCell = ({
 };
 
 const EditableTable = () => {
+
+  const [session] = useSession();
   const [form] = Form.useForm();
-
-  // let n = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
-  // fetchData = () => {
-  //   adalApiFetch(fetch, "/Tenant", {})
-  //     .then(response => response.json())
-  //     .then(responseJson => {
-  //       if (!this.isCancelled) {
-  //           const results= responseJson.map(row => ({
-  //               ClientId: row.ClientId,
-  //               ClientSecret: row.ClientSecret,
-  //               Id: row.Id,
-  //               SiteCollectionTestUrl: row.SiteCollectionTestUrl,
-  //               TenantDomainUrl: row.TenantDomainUrl
-  //             }))
-  //         this.setState({ data: results });
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // The parent's keys shoud be equal to their corresponding date.
-  // The children's keys should be equal to their corresponding uid.
-  // https://stackoverflow.com/a/29813867/15612571
-  const [data, setData] = useState([
-    {
-      key: "2010-10",
-      date: "2010-10",
-      crop_type: "Mango Keitt",
-      yield_values: 14,
-      children: [
-        {
-          key: 1,
-          uid: 1,
-          date: "2010-10-14",
-          crop_type: "Mango Keitt",
-          yield_values: 9,
-        },
-        {
-          key: 2,
-          uid: 2,
-          date: "2010-10-23",
-          crop_type: "Mango Keitt",
-          yield_values: 5,
-        },
-      ],
-    },
-    {
-      key: 15,
-      date: "2013-10",
-      crop_type: "Mango Tommy Atkins",
-      yield_values: 9,
-      children: [
-        {
-          key: 3,
-          uid: 3,
-          date: "2013-10-01",
-          crop_type: "Mango Tommy Atkins",
-          yield_values: 4,
-        },
-        {
-          key: 4,
-          uid: 4,
-          date: "2013-10-10",
-          crop_type: "Mango Tommy Atkins",
-          yield_values: 5,
-        },
-      ],
-    },
-  ]);
-
+  const [data, setData] = useState();  
   const [modifiedRows, setModifiedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
   const [editingKey, setEditingKey] = useState("");
@@ -154,8 +135,6 @@ const EditableTable = () => {
       crop_type: "",
       yield_values: "",
     };
-
-    setModifiedRows(modifiedRows.concat(newRow));
 
     newData.push(newRow);
     setData(newData);
@@ -214,7 +193,45 @@ const EditableTable = () => {
     }
   };
 
-  const handleCommit = async () => {};
+  const handleCommit = async () => {
+
+    await fetch(
+      `http://0.0.0.0:8001/api/v1/data/upsert`,
+      {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.accessToken}`
+        },
+        body: JSON.stringify(modifiedRows),
+      }
+    ).then((res) => {
+      if ((res.ok) || (res.status == 404)) { 
+        return res.json();
+      }
+      return res.text().then(text => {throw new Error(text)})
+    })
+    .then((result) => { 
+      if (result.detail == "Upsert data error") {
+        notification["error"]({
+          message: "Se ha producido un error al añadir o modificar los datos.",
+        });
+      } else {
+        notification.open({
+          message: "Se han añadido y/o modificado los datos correctamente. Por favor recargue la página.",
+        });
+      }
+    })
+    .catch((err) => {
+      notification["error"]({
+        message: "Ha ocurrido un error al conectarse con el servidor",
+        description: `${err}`,
+      });
+    });
+
+
+
+  };
 
   const columns = [
     {
@@ -242,15 +259,17 @@ const EditableTable = () => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <a
-              href="javascript:void(0)"
+            <Button
+              type="link"
+              ghost
               onClick={() => handleSave(record.key)}
               style={{
                 marginRight: 8,
+                padding: 0
               }}
             >
               Guardar
-            </a>
+            </Button>
             <Popconfirm title="¿Desea cancelar?" onConfirm={cancel}>
               <a>Cancelar</a>
             </Popconfirm>
@@ -291,6 +310,53 @@ const EditableTable = () => {
       }),
     };
   });
+
+
+  useEffect(async () => {
+    await fetch(
+      `http://0.0.0.0:8001/api/v1/data/get`,
+      {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.accessToken}`
+        },
+      }
+    ).then((res) => {
+      if ((res.ok) || (res.status == 404)) { 
+        return res.json();
+      }
+      return res.text().then(text => {throw new Error(text)})
+    })
+    .then((result) => { 
+      if (result.detail == "Specified data not found") {
+        notification["error"]({
+          message: "No se han encontrado los datos.",
+          description: `${err}`,
+        });
+      } else {
+        result = result.data
+        var id, i, j;
+        for (i = 0; i < result.length; i++) {
+          id = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
+          result[i]["key"] = id;
+          for (j = 0; j < result[i].children.length; j++) {
+            result[i].children[j]["key"] = result[i].children[j]["uid"];
+          }
+        }
+        console.log(result);
+        setData(result);
+      }
+    })
+    .catch((err) => {
+      notification["error"]({
+        message: "Ha ocurrido un error al conectarse con el servidor",
+        description: `${err}`,
+      });
+    });
+  }, [])
+
+
   return (
     <Form form={form} component={false}>
       <Row justify="space-between">

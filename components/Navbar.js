@@ -11,9 +11,7 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 
-import styles from "../styles/Home.module.css";
-
-const { Header } = Layout;
+const { Header, Content } = Layout;
 const { Text } = Typography;
 
 const Navbar = () => {
@@ -21,44 +19,36 @@ const Navbar = () => {
   const [session, _] = useSession();
 
   return (
-    <Header style={{ backgroundColor: "#FFFFFF" }}>
+    <Header style={{ backgroundColor: "#FFF" }}>
+      <Content style={{ padding: '0 50px' }}>
       <Row justify="space-between">
         <Col>
-          <Row gutter={25}>
-            <Col>
+        <div className="logo">
               <Link href="/">
-                <a className="logo">
                   <img
-                    src="/tropical-ia-02.svg"
+                    src="tropical-ia-02.svg"
                     alg="TROPICAL-IA logo"
-                    className={styles.logo}
                   ></img>
-                </a>
               </Link>
-            </Col>
-            <Col>
+              </div>
               <Menu mode="horizontal" defaultSelectedKeys={router.pathname}>
                 <Menu.Item key="/" icon={<HomeOutlined />}>
                   <Link href="/">Inicio</Link>
                 </Menu.Item>
-                {session && (
-                  <Menu.Item key="/dashboard" icon={<AppstoreOutlined />}>
-                    <Link href="/dashboard">Cuadro de mando</Link>
-                  </Menu.Item>
-                )}
+                <Menu.Item key="/dashboard" icon={<AppstoreOutlined />} disabled={!session}>
+                  <Link href="/dashboard">Cuadro de mando</Link>
+                </Menu.Item>
                 <Menu.Item key="/about" icon={<InfoCircleOutlined />}>
-                  <Link href="/about">Acerca de TROPICAL-IA</Link>
+                  <Link href="/about">Acerca de</Link>
                 </Menu.Item>
               </Menu>
-            </Col>
-          </Row>
         </Col>
         <Col>
           {session ? (
             <>
-              <Text>Bienvenido, {session.user.name}</Text>
+              <Text>Bienvenid@ {session.user.name}</Text>
               <Divider type="vertical" style={{ border: 0 }} />
-              <Text>
+              <Text type="danger">
                 <a onClick={signOut}>
                   <LogoutOutlined />
                 </a>
@@ -75,6 +65,7 @@ const Navbar = () => {
           )}
         </Col>
       </Row>
+      </Content>
     </Header>
   );
 };

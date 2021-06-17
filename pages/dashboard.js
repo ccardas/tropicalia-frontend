@@ -17,16 +17,13 @@ const Dashboard = () => {
   if (typeof window !== "undefined" && loading) return null;
 
   // if no session exists, display access denied message
-  if (!session) return <AccessDenied />;
+  if (!session) return <BaseLayout><AccessDenied /></BaseLayout>;
 
   //TODO: display options based on roles.
   return (
     <BaseLayout>
-      <PageHeader className="site-page-header"></PageHeader>
-
-      <Title>Bienvenido al cuadro de mando de la aplicación</Title>
-      <Divider />
-
+      <PageHeader className="site-page-header">
+      <Title>Cuadro de mando</Title>
       <Tabs type="card" centered="true" size="large">
         <TabPane tab="Realizar una predicción" key="1">
           <RunModel />
@@ -40,6 +37,7 @@ const Dashboard = () => {
           <Dataset />
         </TabPane>
       </Tabs>
+      </PageHeader>
     </BaseLayout>
   );
 };

@@ -1,5 +1,5 @@
 import BaseLayout from "../components/Layout";
-import { PageHeader, Typography, Row, Col, Divider } from "antd";
+import { PageHeader, Typography, Row, Col } from "antd";
 
 const { Text, Title } = Typography;
 

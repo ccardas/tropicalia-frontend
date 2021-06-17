@@ -1,49 +1,52 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-import axios from "axios";
+import FormData from "form-data";
 
 const options = {
   providers: [
     Providers.Credentials({
       name: "credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
+        username: { label: "Nombre de usuario", type: "text" },
+        password: { label: "Contraseña", type: "password" },
       },
       authorize: async (credentials) => {
-        // const user = await axios({
-        //   method: "post",
-        //   url: "http://0.0.0.0:8001/api/v1/auth/login",
-        //   headers: {
-        //     accept: '*/*',
-        //     'Content-Type': 'application/json'
-        //   },
-        //   data: {
-        //     user: {
-        //       username: credentials.username,
-        //       password: credentials.password
-        //     }
-        //   }
-        // });
+        const username = credentials.username;
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", credentials.password);
 
-        let user;
+        const res = await fetch("http://0.0.0.0:8001/api/v1/auth/login", {
+          method: "POST",
+          header: { "Content-Type": "application/json" },
+          body: formData,
+        });
 
-        if (credentials.username == "demo" && credentials.password == "demo") {
-          user = {
-            id: 1,
-            name: "Demo",
-            email: "username@demo.com",
-          };
-        }
-
-        if (user) {
-          return user;
+        if (res.ok) {
+          var user = await res.json();
+          user = {...{access_token: user.access_token}, ...{name: username}}
+          console.log(user)
+          return Promise.resolve(user);
         } else {
-          return null;
+          return Promise.resolve(null);
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt(token, user) {
+      // This JSON Web Token callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated (i.e whenever a session is accessed in the client)
+      if (user?.access_token) {
+        token.accessToken = user.access_token
+      }
+      return token
+    },
+    async session(session, token) {
+      // The session callback is called whenever a session is checked
+      session.accessToken = token.accessToken;
+      return session
+    }
+  },
   session: {
     jwt: true,
     maxAge: 1 * 24 * 60 * 60, // 1 day

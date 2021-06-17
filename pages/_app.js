@@ -1,9 +1,11 @@
 import Head from "next/head";
 import { Provider } from "next-auth/client";
 
-import "antd/dist/antd.css";
-import "../styles/globals.css";
-import "../public/css/custom-styles.css";
+// Load typefaces
+import "../public/assets/fonts/inter/inter.css";
+
+// Load theme
+import "../styles/theme.css";
 
 export default function MyApp({ Component, pageProps }) {
   return (

@@ -7,10 +7,10 @@ const AccessDenied = () => {
     <Result
       status="403"
       title="403"
-      subTitle="Sorry, you are not authorized to access this page."
+      subTitle="Lo siento, no estás autorizado a acceder a esta página."
       extra={
         <Link href="/">
-          <Button type="primary">Back Home</Button>
+          <Button type="link">Volver</Button>
         </Link>
       }
     />

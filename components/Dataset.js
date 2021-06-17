@@ -27,8 +27,8 @@ const Dataset = () => {
   return (
     <>
       <Space style={{ width: "100%" }} direction="vertical">
-        <Title level={2}>Conjunto de datos.</Title>
-        <Text>En la siguiente tabla podrá interactuar con los datos. </Text>
+        <Title level={2}>Visualización e interacción con los datos.</Title>
+        <Text>En la siguiente tabla podrá añadir, modificar y eliminar datos. </Text>
         <Table />
       </Space>
       <Divider />

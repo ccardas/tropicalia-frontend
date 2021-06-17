@@ -6,11 +6,12 @@ const { Content, Footer } = Layout;
 
 const BaseLayout = (props) => {
   return (
-    <Layout className="layout">
+    <Layout>
       <Navbar />
-      <Content style={{ padding: "0 50px" }}>
-        <div className="site-layout-content">{props.children}</div>
-        <Divider />
+      <Content span={8} style={{ padding: "50px 50px 0 50px", width: "960px", margin: "auto" }}>
+        <div className="site-layout-content" style={{ padding: 24, minHeight: 380 }}>
+          {props.children}
+        </div>
       </Content>
       <Footer style={{ textAlign: "center" }}>
         TROPICAL-IA [Build, Deploy, Scale] ©2021 Khaos Research Group
