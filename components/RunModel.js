@@ -18,9 +18,13 @@ const { Option } = Select;
 
 const cropTypesOptions = [
   {
-    value: 'Mango',
+    value: 'mango',
     label: 'Mango',
     children: [
+      {
+        value: 'Mango',
+        label: 'Todas las variedades'
+      },
       {
         value: 'Mango Genérico',
         label: 'Mango Genérico'
@@ -63,9 +67,13 @@ const cropTypesOptions = [
     ],
   },
   {
-    value: 'Aguacate',
+    value: 'aguacate',
     label: 'Aguacate',
     children: [
+      {
+        value: 'Aguacate',
+        label: 'Todas las variedades'
+      },
       {
         value: 'Aguacate Bacon',
         label: 'Aguacate Bacon'
@@ -143,16 +151,38 @@ const RunModel = () => {
     setCropType(e[e.length - 1]);
   }
 
-  const doPrediction = () => {
-    if (!doCheckModel(model, cropType)) {
+  const doPrediction = async () => {
+    const isMonthly = (value == 1? false : true)
+    await fetch(
+      `http://0.0.0.0:8001/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
+      {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.accessToken}`
+        },
+      }
+    ).then((res) => {
+      if ((res.ok) || (res.status == 404)) { 
+        return res.json();
+      }
+      return res.text().then(text => {throw new Error(text)})
+    })
+    .then((result) => { 
+      if (result.detail == "Data prediction failed") {
+        const msg = `Ha ocurrido un error durante el entrenamiento.`;
+        setMessage(msg); 
+      } else {
+        console.log("MIRAAA");
+        console.log(result);
+      }
+    })
+    .catch((err) => {
       notification["error"]({
-        message: "El modelo seleccionado no está entrenado",
-        description:
-          "Por favor, entrene el modelo en la sección de entrenamiento.",
+        message: "Ha ocurrido un error al conectarse con el servidor",
+        description: `${err}`,
       });
-    } else {
-      // TODO
-    }
+    });    
   };
 
   const doCheckModel = async (m, ct) => {

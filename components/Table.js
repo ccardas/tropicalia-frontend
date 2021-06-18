@@ -195,15 +195,16 @@ const EditableTable = () => {
 
   const handleCommit = async () => {
 
+    const rowChanges = [modifiedRows, deletedRows];
     await fetch(
-      `http://0.0.0.0:8001/api/v1/data/upsert`,
+      `http://0.0.0.0:8001/api/v1/data/apply`,
       {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${session.accessToken}`
         },
-        body: JSON.stringify(modifiedRows),
+        body: JSON.stringify(rowChanges),
       }
     ).then((res) => {
       if ((res.ok) || (res.status == 404)) { 
@@ -216,9 +217,13 @@ const EditableTable = () => {
         notification["error"]({
           message: "Se ha producido un error al añadir o modificar los datos.",
         });
+      } else if (result.detail == "Delete data error") {
+        notification["error"]({
+          message: "Se ha producido un error al eliminar los datos.",
+        });
       } else {
         notification.open({
-          message: "Se han añadido y/o modificado los datos correctamente. Por favor recargue la página.",
+          message: "Se han aplicado los cambios correctamente. Por favor recargue la página.",
         });
       }
     })

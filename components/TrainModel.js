@@ -17,9 +17,13 @@ const { Option } = Select;
 
 const cropTypesOptions = [
   {
-    value: 'Mango',
+    value: 'mango',
     label: 'Mango',
     children: [
+      {
+        value: 'Mango',
+        label: 'Todas las variedades'
+      },
       {
         value: 'Mango Genérico',
         label: 'Mango Genérico'
@@ -62,9 +66,13 @@ const cropTypesOptions = [
     ],
   },
   {
-    value: 'Aguacate',
+    value: 'aguacate',
     label: 'Aguacate',
     children: [
+      {
+        value: 'Aguacate',
+        label: 'Todas las variedades'
+      },
       {
         value: 'Aguacate Bacon',
         label: 'Aguacate Bacon'
