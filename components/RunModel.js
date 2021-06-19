@@ -10,9 +10,11 @@ import {
   Cascader,
   Alert,
   notification,
+  Table
 } from "antd";
 import { useEffect, useState, encodedURIComponent } from "react";
 import { Chart } from "react-charts";
+import { CSVLink } from "react-csv"
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -133,6 +135,8 @@ const RunModel = () => {
   const [dataChart, setDataChart] = useState();
   const [seriesChart, setSeriesChart] = useState();
   const [axesChart, setAxesChart] = useState(); 
+  const [tableData, setTableData] = useState();
+  const [tableCols, setTableCols] = useState();
 
   const radioStyle = {
     display: "block",
@@ -222,6 +226,49 @@ const RunModel = () => {
     return [chart, series, axes];
   } 
 
+  function getTable(rawLyData, rawForecastData) {
+    var dataSource = [];
+    var i, obj, len, real, forecast;
+    const columns = [
+      {
+        title: 'Mes',
+        dataIndex: 'month',
+        key: 'month',
+      },
+      {
+        title: 'Valor real',
+        dataIndex: 'real',
+        key: 'real',
+      },
+      {
+        title: 'Pronóstico año siguiente',
+        dataIndex: 'forecast',
+        key: 'forecast',
+      },
+      {
+        title: 'Diferencia',
+        dataIndex: 'difference',
+        key: 'difference',
+      },
+    ];
+    len = rawForecastData.length;
+    for (i = 0; i < len; i++) {
+      real = rawLyData[rawLyData.length - i - 1].yield_values;
+      forecast = rawForecastData[i].yield_values;
+
+      obj = {
+        key: i,
+        month: rawForecastData[i].date.split("-")[1],
+        real: real,
+        forecast: forecast,
+        difference: Math.abs(real-forecast)
+      };
+      dataSource.push(obj);
+    }
+
+    return [dataSource, columns];
+  }
+
   const doPrediction = async () => {
     const isMonthly = (value == 1? false : true)
     await fetch(
@@ -244,15 +291,23 @@ const RunModel = () => {
         const msg = `Ha ocurrido un error durante el entrenamiento.`;
         setMessage(msg); 
       } else {
-        const [chart, series, axes] = getDataChart(
+        if (!isMonthly){
+          const [chart, series, axes] = getDataChart(
+            result.last_year_data.data,
+            result.prediction.data,
+            result.forecast.data
+          );
+          setDataChart(chart);
+          setSeriesChart(series);
+          setAxesChart(axes);
+        }
+
+        const [tData, tCols] = getTable(
           result.last_year_data.data,
-          result.prediction.data,
-          result.forecast.data
+          result.forecast.data,
         );
-        console.log(chart);
-        setDataChart(chart);
-        setSeriesChart(series);
-        setAxesChart(axes);
+        setTableData(tData);
+        setTableCols(tCols);
       }
     })
     .catch((err) => {
@@ -326,7 +381,7 @@ const RunModel = () => {
             <Select placeholder="Selecciona un modelo" style={{ width: '100%' }} onChange={m => onSelectModel(m)}>
               <Option value="SARIMA">SARIMA</Option>
               <Option value="Prophet">Prophet</Option>
-              <Option value="%">Todos los modelos</Option>
+              {/* <Option value="%">Todos los modelos</Option> */}
             </Select>
           </Col>
           <Col span={12}>
@@ -357,6 +412,22 @@ const RunModel = () => {
             width: "100%",
             height: "400px"
           }}/>
+        )}
+
+        { tableData && tableCols && (
+          <>
+            <Table dataSource={tableData} columns={tableCols} pagination={false} style={{
+              width: "100%",
+            }}/>
+            <Button>
+              <CSVLink
+                filename={"prediccion.csv"}
+                data={tableData}
+              >
+              Exportar como CSV
+              </CSVLink>
+            </Button>
+          </>
         )}
         
       </Space>

@@ -235,7 +235,7 @@ const TrainModel = () => {
             <Select placeholder="Selecciona un modelo" style={{ width: '100%' }} onChange={m => onSelectModel(m)}>
               <Option value="SARIMA">SARIMA</Option>
               <Option value="Prophet">Prophet</Option>
-              <Option value="%">Todos los modelos</Option>
+              {/* <Option value="%">Todos los modelos</Option> */}
             </Select>
           </Col>
           <Col span={12}>
