@@ -12,6 +12,7 @@ import {
   notification,
 } from "antd";
 import { useEffect, useState, encodedURIComponent } from "react";
+import { Chart } from "react-charts";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -129,6 +130,9 @@ const RunModel = () => {
   const [model, setModel] = useState();
   const [cropType, setCropType] = useState();
   const [message, setMessage] = useState();
+  const [dataChart, setDataChart] = useState();
+  const [seriesChart, setSeriesChart] = useState();
+  const [axesChart, setAxesChart] = useState(); 
 
   const radioStyle = {
     display: "block",
@@ -150,6 +154,73 @@ const RunModel = () => {
     console.log("crop selected: ", e);
     setCropType(e[e.length - 1]);
   }
+
+  function getDataChart(rawLyData, rawPredData, rawForecastData) {
+    var lyData = [];
+    var predData = []; 
+    var forecastData = [];
+    
+    var i, date;
+
+    for (i = 0; i < rawPredData.length; i++) {
+      date = new Date(rawPredData[i].date);
+      predData.push({
+        primary: date,
+        secondary: rawPredData[i].yield_values
+      })
+    }
+    
+    for (i = 0; i < rawLyData.length; i++) {
+      date = new Date(rawLyData[i].date);
+      lyData.push({
+        primary: date,
+        secondary: rawLyData[i].yield_values + 0.001
+      })
+    }
+
+    for (i = 0; i < rawForecastData.length; i++) {
+      date = new Date(rawForecastData[i].date);
+      forecastData.push({
+        primary: date,
+        secondary: rawForecastData[i].yield_values
+      })
+    }
+
+    const chart = [
+      {
+        label: "Datos reales",
+        data: lyData
+      },
+      {
+        label: "Datos predichos",
+        data: predData
+      },
+      {
+        label: "Pronóstico para el próximo año",
+        data: forecastData
+      }
+      
+    ];
+
+    const series = {
+      type: "line",
+      showPoints: false,
+    };
+
+
+    const axes = [
+      {
+        primary: true, 
+        type: "time", 
+        position: "bottom"
+      },
+      {
+        type: "linear", position: "left"
+      }
+    ];
+
+    return [chart, series, axes];
+  } 
 
   const doPrediction = async () => {
     const isMonthly = (value == 1? false : true)
@@ -173,8 +244,15 @@ const RunModel = () => {
         const msg = `Ha ocurrido un error durante el entrenamiento.`;
         setMessage(msg); 
       } else {
-        console.log("MIRAAA");
-        console.log(result);
+        const [chart, series, axes] = getDataChart(
+          result.last_year_data.data,
+          result.prediction.data,
+          result.forecast.data
+        );
+        console.log(chart);
+        setDataChart(chart);
+        setSeriesChart(series);
+        setAxesChart(axes);
       }
     })
     .catch((err) => {
@@ -273,6 +351,14 @@ const RunModel = () => {
         <Button type="primary" onClick={doPrediction} block disabled={!model || !cropType}>
           Predecir
         </Button>
+
+        { dataChart && seriesChart && axesChart && (
+          <Chart data={dataChart} series={seriesChart} axes={axesChart} tooltip style={{
+            width: "100%",
+            height: "400px"
+          }}/>
+        )}
+        
       </Space>
     </>
   );
