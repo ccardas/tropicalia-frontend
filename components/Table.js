@@ -10,57 +10,9 @@ import {
   Divider,
   Row,
   Col,
-  notification
+  notification,
 } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
-
-// const [data, setData] = useState([
-//   {
-//     key: "2010-10",
-//     date: "2010-10",
-//     crop_type: "Mango Keitt",
-//     yield_values: 14,
-//     children: [
-//       {
-//         key: 1,
-//         uid: 1,
-//         date: "2010-10-14",
-//         crop_type: "Mango Keitt",
-//         yield_values: 9,
-//       },
-//       {
-//         key: 2,
-//         uid: 2,
-//         date: "2010-10-23",
-//         crop_type: "Mango Keitt",
-//         yield_values: 5,
-//       },
-//     ],
-//   },
-//   {
-//     key: 15,
-//     date: "2013-10",
-//     crop_type: "Mango Tommy Atkins",
-//     yield_values: 9,
-//     children: [
-//       {
-//         key: 3,
-//         uid: 3,
-//         date: "2013-10-01",
-//         crop_type: "Mango Tommy Atkins",
-//         yield_values: 4,
-//       },
-//       {
-//         key: 4,
-//         uid: 4,
-//         date: "2013-10-10",
-//         crop_type: "Mango Tommy Atkins",
-//         yield_values: 5,
-//       },
-//     ],
-//   },
-// ]);
-
 
 const EditableCell = ({
   editing,
@@ -98,10 +50,9 @@ const EditableCell = ({
 };
 
 const EditableTable = () => {
-
   const [session] = useSession();
   const [form] = Form.useForm();
-  const [data, setData] = useState();  
+  const [data, setData] = useState();
   const [modifiedRows, setModifiedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
   const [editingKey, setEditingKey] = useState("");
@@ -109,7 +60,6 @@ const EditableTable = () => {
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
-    console.log(modifiedRows);
     form.setFieldsValue({
       date: "",
       crop_type: "",
@@ -189,53 +139,51 @@ const EditableTable = () => {
       setData(newData);
       setEditingKey("");
     } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
+      // console.log("Validate Failed:", errInfo);
     }
   };
 
   const handleCommit = async () => {
-
     const rowChanges = [modifiedRows, deletedRows];
-    await fetch(
-      `http://0.0.0.0:8001/api/v1/data/apply`,
-      {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
-        },
-        body: JSON.stringify(rowChanges),
-      }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/v1/data/apply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify(rowChanges),
     })
-    .then((result) => { 
-      if (result.detail == "Upsert data error") {
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (result.detail == "Upsert data error") {
+          notification["error"]({
+            message:
+              "Se ha producido un error al añadir o modificar los datos.",
+          });
+        } else if (result.detail == "Delete data error") {
+          notification["error"]({
+            message: "Se ha producido un error al eliminar los datos.",
+          });
+        } else {
+          notification.open({
+            message:
+              "Se han aplicado los cambios correctamente. Por favor recargue la página.",
+          });
+        }
+      })
+      .catch((err) => {
         notification["error"]({
-          message: "Se ha producido un error al añadir o modificar los datos.",
+          message: "Ha ocurrido un error al conectarse con el servidor",
+          description: `${err}`,
         });
-      } else if (result.detail == "Delete data error") {
-        notification["error"]({
-          message: "Se ha producido un error al eliminar los datos.",
-        });
-      } else {
-        notification.open({
-          message: "Se han aplicado los cambios correctamente. Por favor recargue la página.",
-        });
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
       });
-    });
-
-
-
   };
 
   const columns = [
@@ -270,7 +218,7 @@ const EditableTable = () => {
               onClick={() => handleSave(record.key)}
               style={{
                 marginRight: 8,
-                padding: 0
+                padding: 0,
               }}
             >
               Guardar
@@ -316,51 +264,48 @@ const EditableTable = () => {
     };
   });
 
-
   useEffect(async () => {
-    await fetch(
-      `http://0.0.0.0:8001/api/v1/data/get`,
-      {
-        method: "GET",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
-        },
-      }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/v1/data/get", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
     })
-    .then((result) => { 
-      if (result.detail == "Specified data not found") {
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (result.detail == "Specified data not found") {
+          notification["error"]({
+            message: "No se han encontrado los datos.",
+            description: `${err}`,
+          });
+        } else {
+          result = result.data;
+          var id, i, j;
+          for (i = 0; i < result.length; i++) {
+            id = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
+            result[i]["key"] = id;
+            for (j = 0; j < result[i].children.length; j++) {
+              result[i].children[j]["key"] = result[i].children[j]["uid"];
+            }
+          }
+          setData(result);
+        }
+      })
+      .catch((err) => {
         notification["error"]({
-          message: "No se han encontrado los datos.",
+          message: "Ha ocurrido un error al conectarse con el servidor",
           description: `${err}`,
         });
-      } else {
-        result = result.data
-        var id, i, j;
-        for (i = 0; i < result.length; i++) {
-          id = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
-          result[i]["key"] = id;
-          for (j = 0; j < result[i].children.length; j++) {
-            result[i].children[j]["key"] = result[i].children[j]["uid"];
-          }
-        }
-        console.log(result);
-        setData(result);
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
       });
-    });
-  }, [])
-
+  }, []);
 
   return (
     <Form form={form} component={false}>

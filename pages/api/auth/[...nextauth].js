@@ -15,17 +15,21 @@ const options = {
         const formData = new FormData();
         formData.append("username", username);
         formData.append("password", credentials.password);
-
-        const res = await fetch("http://0.0.0.0:8001/api/v1/auth/login", {
-          method: "POST",
-          header: { "Content-Type": "application/json" },
-          body: formData,
-        });
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_API_URL + "/api/v1/auth/login",
+          {
+            method: "POST",
+            header: { "Content-Type": "application/json" },
+            body: formData,
+          }
+        );
 
         if (res.ok) {
           var user = await res.json();
-          user = {...{access_token: user.access_token}, ...{name: username}}
-          console.log(user)
+          user = {
+            ...{ access_token: user.access_token },
+            ...{ name: username },
+          };
           return Promise.resolve(user);
         } else {
           return Promise.resolve(null);
@@ -37,15 +41,15 @@ const options = {
     async jwt(token, user) {
       // This JSON Web Token callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated (i.e whenever a session is accessed in the client)
       if (user?.access_token) {
-        token.accessToken = user.access_token
+        token.accessToken = user.access_token;
       }
-      return token
+      return token;
     },
     async session(session, token) {
       // The session callback is called whenever a session is checked
       session.accessToken = token.accessToken;
-      return session
-    }
+      return session;
+    },
   },
   session: {
     jwt: true,

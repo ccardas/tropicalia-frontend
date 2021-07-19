@@ -16,25 +16,18 @@ const Home = () => {
         sencilla y visual. Para ello, se requiere iniciar sesión y acceder a la
         sección "Cuadro de mando".
       </Text>
-      <Row justify="center" style={{ paddingBottom: "1em" }}>
-        <img
-          alt="timeseries"
-          style={{ height: "20em", border: "1px solid black" }}
-          src="/timeseries.jpg"
-        />
-      </Row>
-      <Row justify="space-between">
+      <Row gutter={16} justify="space-between">
         <Col>
           <img
             alt="avocado"
-            style={{ height: "20em", border: "1px solid black" }}
+            style={{ height: "19em", border: "1px solid black" }}
             src="/avocado.png"
           />
         </Col>
         <Col>
           <img
             alt="mango"
-            style={{ height: "20em", border: "1px solid black" }}
+            style={{ height: "19em", border: "1px solid black" }}
             src="/mango.png"
           />
         </Col>

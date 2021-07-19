@@ -1,46 +1,47 @@
-@import 'node_modules/antd/dist/antd.less';
+@import "node_modules/antd/dist/antd.less";
 
-@primary-color: #07A745;
+@primary-color: #07a745;
 @link-color: @primary-color;
 
 /* Font family and typography helpers */
 
-@font-family: "Inter", -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, sans-serif;
+@font-family: "Inter", -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica,
+  sans-serif;
 @font-feature-settings-base: "cv01" 1, "cv05" 1, "zero" 1, "tnum" 1;
 
 /* Header */
 
 .logo {
-    float: left;
+  float: left;
 }
 
 .logo > img {
-    height: 3.5em;
+  height: 3.5em;
 }
 
 /* Layout */
 
 .site-layout-content {
-    min-height: 280px;
-    padding: 24px;
-    background: #fff;
+  min-height: 280px;
+  padding: 24px;
+  background: #fff;
 }
 
 .editable-cell {
-    position: relative;
+  position: relative;
 }
-  
+
 .editable-cell-value-wrap {
-    padding: 5px 12px;
-    cursor: pointer;
+  padding: 5px 12px;
+  cursor: pointer;
 }
 
 .editable-row:hover .editable-cell-value-wrap {
-    padding: 4px 11px;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
+  padding: 4px 11px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
 }
 
 .editable-row:hover .editable-cell-value-wrap {
-    border: 1px solid #434343;
+  border: 1px solid #434343;
 }
