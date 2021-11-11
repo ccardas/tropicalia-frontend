@@ -427,7 +427,7 @@ const EditableTable = () => {
   };
 
   useEffect(async () => {
-    await fetche(process.nv.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
