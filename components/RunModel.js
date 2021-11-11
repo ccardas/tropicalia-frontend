@@ -10,123 +10,123 @@ import {
   Cascader,
   Alert,
   notification,
-  Table
+  Table,
+  Spin,
 } from "antd";
-import { useEffect, useState, encodedURIComponent } from "react";
+import { useEffect, useState } from "react";
 import { Chart } from "react-charts";
-import { CSVLink } from "react-csv"
+import { CSVLink } from "react-csv";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
 const cropTypesOptions = [
   {
-    value: 'mango',
-    label: 'Mango',
+    value: "mango",
+    label: "Mango",
     children: [
       {
-        value: 'Mango',
-        label: 'Todas las variedades'
+        value: "Mango",
+        label: "Todas las variedades",
       },
       {
-        value: 'Mango Genérico',
-        label: 'Mango Genérico'
+        value: "Mango Genérico",
+        label: "Mango Genérico",
       },
       {
-        value: 'Mango Irwin',
-        label: 'Mango Irwin'
+        value: "Mango Irwin",
+        label: "Mango Irwin",
       },
       {
-        value: 'Mango Keitt',
-        label: 'Mango Keitt'
+        value: "Mango Keitt",
+        label: "Mango Keitt",
       },
       {
-        value: 'Mango Kent',
-        label: 'Mango Kent'
+        value: "Mango Kent",
+        label: "Mango Kent",
       },
       {
-        value: 'Mango Manzanillo',
-        label: 'Mango Manzanillo'
+        value: "Mango Manzanillo",
+        label: "Mango Manzanillo",
       },
       {
-        value: 'Mango Osteen',
-        label: 'Mango Osteen'
-      },
-
-      {
-        value: 'Mango Palmer',
-        label: 'Mango Palmer'
+        value: "Mango Osteen",
+        label: "Mango Osteen",
       },
 
       {
-        value: 'Mango Sensation',
-        label: 'Mango Sensation'
+        value: "Mango Palmer",
+        label: "Mango Palmer",
       },
 
       {
-        value: 'Mango Tommy Atkins',
-        label: 'Mango Tommy Atkins'
+        value: "Mango Sensation",
+        label: "Mango Sensation",
+      },
+
+      {
+        value: "Mango Tommy Atkins",
+        label: "Mango Tommy Atkins",
       },
     ],
   },
   {
-    value: 'aguacate',
-    label: 'Aguacate',
+    value: "aguacate",
+    label: "Aguacate",
     children: [
       {
-        value: 'Aguacate',
-        label: 'Todas las variedades'
+        value: "Aguacate",
+        label: "Todas las variedades",
       },
       {
-        value: 'Aguacate Bacon',
-        label: 'Aguacate Bacon'
+        value: "Aguacate Bacon",
+        label: "Aguacate Bacon",
       },
       {
-        value: 'Aguacate Cocktail',
-        label: 'Aguacate Cocktail'
+        value: "Aguacate Cocktail",
+        label: "Aguacate Cocktail",
       },
       {
-        value: 'Aguacate Fuerte',
-        label: 'Aguacate Fuerte'
+        value: "Aguacate Fuerte",
+        label: "Aguacate Fuerte",
       },
       {
-        value: 'Aguacate Gween',
-        label: 'Aguacate Gween'
+        value: "Aguacate Gween",
+        label: "Aguacate Gween",
       },
       {
-        value: 'Aguacate Hass',
-        label: 'Aguacate Hass'
+        value: "Aguacate Hass",
+        label: "Aguacate Hass",
       },
       {
-        value: 'Aguacate Lamb Hass',
-        label: 'Aguacate Lamb Hass'
+        value: "Aguacate Lamb Hass",
+        label: "Aguacate Lamb Hass",
       },
       {
-        value: 'Aguacate Maluma Hass',
-        label: 'Aguacate Maluma Hass'
+        value: "Aguacate Maluma Hass",
+        label: "Aguacate Maluma Hass",
       },
       {
-        value: 'Aguacate Melón',
-        label: 'Aguacate Melón'
+        value: "Aguacate Melón",
+        label: "Aguacate Melón",
       },
       {
-        value: 'Aguacate Pinkerton',
-        label: 'Aguacate Pinkerton'
+        value: "Aguacate Pinkerton",
+        label: "Aguacate Pinkerton",
       },
       {
-        value: 'Aguacate Reed',
-        label: 'Aguacate Reed'
+        value: "Aguacate Reed",
+        label: "Aguacate Reed",
       },
       {
-        value: 'Aguacate Zutano',
-        label: 'Aguacate Zutano'
+        value: "Aguacate Zutano",
+        label: "Aguacate Zutano",
       },
     ],
   },
 ];
 
 const RunModel = () => {
-
   const [session] = useSession();
   const [value, setValue] = useState(1);
   const [model, setModel] = useState();
@@ -134,9 +134,10 @@ const RunModel = () => {
   const [message, setMessage] = useState();
   const [dataChart, setDataChart] = useState();
   const [seriesChart, setSeriesChart] = useState();
-  const [axesChart, setAxesChart] = useState(); 
+  const [axesChart, setAxesChart] = useState();
   const [tableData, setTableData] = useState();
   const [tableCols, setTableCols] = useState();
+  const [training, setTraining] = useState();
 
   const radioStyle = {
     display: "block",
@@ -145,65 +146,60 @@ const RunModel = () => {
   };
 
   function onChange(e) {
-    console.log("radio checked", e.target.value);
     setValue(e.target.value);
   }
 
   function onSelectModel(e) {
-    console.log("model selected: ", e);
     setModel(e);
   }
 
   function onSelectCropType(e) {
-    console.log("crop selected: ", e);
     setCropType(e[e.length - 1]);
   }
 
   function getDataChart(rawLyData, rawPredData, rawForecastData) {
     var lyData = [];
-    var predData = []; 
+    var predData = [];
     var forecastData = [];
-    
     var i, date;
 
     for (i = 0; i < rawPredData.length; i++) {
       date = new Date(rawPredData[i].date);
       predData.push({
         primary: date,
-        secondary: rawPredData[i].yield_values
-      })
+        secondary: rawPredData[i].yield_values,
+      });
     }
-    
+
     for (i = 0; i < rawLyData.length; i++) {
       date = new Date(rawLyData[i].date);
       lyData.push({
         primary: date,
-        secondary: rawLyData[i].yield_values + 0.001
-      })
+        secondary: rawLyData[i].yield_values + 0.001,
+      });
     }
 
     for (i = 0; i < rawForecastData.length; i++) {
       date = new Date(rawForecastData[i].date);
       forecastData.push({
         primary: date,
-        secondary: rawForecastData[i].yield_values
-      })
+        secondary: rawForecastData[i].yield_values,
+      });
     }
 
     const chart = [
       {
         label: "Datos reales",
-        data: lyData
+        data: lyData,
       },
       {
         label: "Datos predichos",
-        data: predData
+        data: predData,
       },
       {
         label: "Pronóstico para el próximo año",
-        data: forecastData
-      }
-      
+        data: forecastData,
+      },
     ];
 
     const series = {
@@ -211,44 +207,44 @@ const RunModel = () => {
       showPoints: false,
     };
 
-
     const axes = [
       {
-        primary: true, 
-        type: "time", 
-        position: "bottom"
+        primary: true,
+        type: "time",
+        position: "bottom",
       },
       {
-        type: "linear", position: "left"
-      }
+        type: "linear",
+        position: "left",
+      },
     ];
 
     return [chart, series, axes];
-  } 
+  }
 
   function getTable(rawLyData, rawForecastData) {
     var dataSource = [];
     var i, obj, len, real, forecast;
     const columns = [
       {
-        title: 'Mes',
-        dataIndex: 'month',
-        key: 'month',
+        title: "Mes",
+        dataIndex: "month",
+        key: "month",
       },
       {
-        title: 'Valor real',
-        dataIndex: 'real',
-        key: 'real',
+        title: "Valor real",
+        dataIndex: "real",
+        key: "real",
       },
       {
-        title: 'Pronóstico año siguiente',
-        dataIndex: 'forecast',
-        key: 'forecast',
+        title: "Pronóstico año siguiente",
+        dataIndex: "forecast",
+        key: "forecast",
       },
       {
-        title: 'Diferencia',
-        dataIndex: 'difference',
-        key: 'difference',
+        title: "Diferencia",
+        dataIndex: "difference",
+        key: "difference",
       },
     ];
     len = rawForecastData.length;
@@ -261,7 +257,7 @@ const RunModel = () => {
         month: rawForecastData[i].date.split("-")[1],
         real: real,
         forecast: forecast,
-        difference: Math.abs(real-forecast)
+        difference: Math.abs(real - forecast),
       };
       dataSource.push(obj);
     }
@@ -270,85 +266,97 @@ const RunModel = () => {
   }
 
   const doPrediction = async () => {
-    const isMonthly = (value == 1? false : true)
+    setTraining(true);
+    const isMonthly = value == 1 ? false : true;
     await fetch(
-      `http://0.0.0.0:8001/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
+      process.env.NEXT_PUBLIC_API_URL +
+        `/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
       {
         method: "GET",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
+          Authorization: `Bearer ${session.accessToken}`,
         },
       }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
-    })
-    .then((result) => { 
-      if (result.detail == "Data prediction failed") {
-        const msg = `Ha ocurrido un error durante el entrenamiento.`;
-        setMessage(msg); 
-      } else {
-        if (!isMonthly){
-          const [chart, series, axes] = getDataChart(
+    )
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (result.detail == "Data prediction failed") {
+          const msg = `Ha ocurrido un error durante el entrenamiento.`;
+          setMessage(msg);
+        } else {
+          if (!isMonthly) {
+            const [chart, series, axes] = getDataChart(
+              result.last_year_data.data,
+              result.prediction.data,
+              result.forecast.data
+            );
+            setDataChart(chart);
+            setSeriesChart(series);
+            setAxesChart(axes);
+          }
+
+          const [tData, tCols] = getTable(
             result.last_year_data.data,
-            result.prediction.data,
             result.forecast.data
           );
-          setDataChart(chart);
-          setSeriesChart(series);
-          setAxesChart(axes);
+          setTableData(tData);
+          setTableCols(tCols);
         }
-
-        const [tData, tCols] = getTable(
-          result.last_year_data.data,
-          result.forecast.data,
-        );
-        setTableData(tData);
-        setTableCols(tCols);
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
+      })
+      .catch((err) => {
+        notification["error"]({
+          message: "Ha ocurrido un error al conectarse con el servidor",
+          description: `${err}`,
+        });
       });
-    });    
+    setTraining(false);
   };
 
   const doCheckModel = async (m, ct) => {
     await fetch(
-      `http://0.0.0.0:8001/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
+      process.env.NEXT_PUBLIC_API_URL +
+        `/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
       {
         method: "GET",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
+          Authorization: `Bearer ${session.accessToken}`,
         },
       }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
-    })
-    .then((result) => { 
-      if (result.detail == "The specified combination has not been trained.") {
-        const msg = `La combinación especificada no ha sido entrenada.`;
-        setMessage(msg); 
-      } else {
-        const msg = `La combinación seleccionada está entrenada con datos hasta la fecha: ${result.last_date}`;
-        setMessage(msg); 
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
+    )
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (
+          result.detail == "The specified combination has not been trained."
+        ) {
+          const msg = `La combinación especificada no ha sido entrenada.`;
+          setMessage(msg);
+        } else {
+          const msg = `La combinación seleccionada está entrenada con datos hasta la fecha: ${result.last_date}`;
+          setMessage(msg);
+        }
+      })
+      .catch((err) => {
+        notification["error"]({
+          message: "Ha ocurrido un error al conectarse con el servidor",
+          description: `${err}`,
+        });
       });
-    });
   };
 
   useEffect(() => {
@@ -378,15 +386,23 @@ const RunModel = () => {
         </Paragraph>
         <Row gutter={16}>
           <Col span={12}>
-            <Select placeholder="Selecciona un modelo" style={{ width: '100%' }} onChange={m => onSelectModel(m)}>
+            <Select
+              placeholder="Selecciona un modelo"
+              style={{ width: "100%" }}
+              onChange={(m) => onSelectModel(m)}
+            >
               <Option value="SARIMA">SARIMA</Option>
               <Option value="Prophet">Prophet</Option>
               {/* <Option value="%">Todos los modelos</Option> */}
             </Select>
           </Col>
           <Col span={12}>
-            <Cascader placeholder="Elija el tipo de cultivo"
-              style={{ width: '100%' }} options={cropTypesOptions} onChange={c => onSelectCropType(c)} />
+            <Cascader
+              placeholder="Elija el tipo de cultivo"
+              style={{ width: "100%" }}
+              options={cropTypesOptions}
+              onChange={(c) => onSelectCropType(c)}
+            />
           </Col>
         </Row>
 
@@ -399,37 +415,49 @@ const RunModel = () => {
           </Radio>
         </Radio.Group>
 
-        { message && (
-          <Alert message={message} type="info" />
-        )}
+        {message && <Alert message={message} type="info" />}
 
-        <Button type="primary" onClick={doPrediction} block disabled={!model || !cropType}>
+        {training && <Spin />}
+
+        <Button
+          type="primary"
+          onClick={doPrediction}
+          block
+          disabled={!model || !cropType}
+        >
           Predecir
         </Button>
 
-        { dataChart && seriesChart && axesChart && (
-          <Chart data={dataChart} series={seriesChart} axes={axesChart} tooltip style={{
-            width: "100%",
-            height: "400px"
-          }}/>
+        {dataChart && seriesChart && axesChart && (
+          <Chart
+            data={dataChart}
+            series={seriesChart}
+            axes={axesChart}
+            tooltip
+            style={{
+              width: "100%",
+              height: "400px",
+            }}
+          />
         )}
 
-        { tableData && tableCols && (
+        {tableData && tableCols && (
           <>
-            <Table dataSource={tableData} columns={tableCols} pagination={false} style={{
-              width: "100%",
-            }}/>
+            <Table
+              dataSource={tableData}
+              columns={tableCols}
+              pagination={false}
+              style={{
+                width: "100%",
+              }}
+            />
             <Button>
-              <CSVLink
-                filename={"prediccion.csv"}
-                data={tableData}
-              >
-              Exportar como CSV
+              <CSVLink filename={"prediccion.csv"} data={tableData}>
+                Exportar como CSV
               </CSVLink>
             </Button>
           </>
         )}
-        
       </Space>
     </>
   );

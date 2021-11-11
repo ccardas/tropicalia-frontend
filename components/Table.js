@@ -12,113 +12,113 @@ import {
   Col,
   notification,
   DatePicker,
-  InputNumber
+  InputNumber,
 } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
-import moment from 'moment';
-import { nanoid } from 'nanoid';
+import moment from "moment";
+import { nanoid } from "nanoid";
 
 const cropTypesOptions = [
   {
-    value: 'mango',
-    label: 'Mango',
+    value: "mango",
+    label: "Mango",
     children: [
       {
-        value: 'Mango',
-        label: 'Todas las variedades'
+        value: "Mango",
+        label: "Todas las variedades",
       },
       {
-        value: 'Mango Genérico',
-        label: 'Mango Genérico'
+        value: "Mango Genérico",
+        label: "Mango Genérico",
       },
       {
-        value: 'Mango Irwin',
-        label: 'Mango Irwin'
+        value: "Mango Irwin",
+        label: "Mango Irwin",
       },
       {
-        value: 'Mango Keitt',
-        label: 'Mango Keitt'
+        value: "Mango Keitt",
+        label: "Mango Keitt",
       },
       {
-        value: 'Mango Kent',
-        label: 'Mango Kent'
+        value: "Mango Kent",
+        label: "Mango Kent",
       },
       {
-        value: 'Mango Manzanillo',
-        label: 'Mango Manzanillo'
+        value: "Mango Manzanillo",
+        label: "Mango Manzanillo",
       },
       {
-        value: 'Mango Osteen',
-        label: 'Mango Osteen'
-      },
-
-      {
-        value: 'Mango Palmer',
-        label: 'Mango Palmer'
+        value: "Mango Osteen",
+        label: "Mango Osteen",
       },
 
       {
-        value: 'Mango Sensation',
-        label: 'Mango Sensation'
+        value: "Mango Palmer",
+        label: "Mango Palmer",
       },
 
       {
-        value: 'Mango Tommy Atkins',
-        label: 'Mango Tommy Atkins'
+        value: "Mango Sensation",
+        label: "Mango Sensation",
+      },
+
+      {
+        value: "Mango Tommy Atkins",
+        label: "Mango Tommy Atkins",
       },
     ],
   },
   {
-    value: 'aguacate',
-    label: 'Aguacate',
+    value: "aguacate",
+    label: "Aguacate",
     children: [
       {
-        value: 'Aguacate',
-        label: 'Todas las variedades'
+        value: "Aguacate",
+        label: "Todas las variedades",
       },
       {
-        value: 'Aguacate Bacon',
-        label: 'Aguacate Bacon'
+        value: "Aguacate Bacon",
+        label: "Aguacate Bacon",
       },
       {
-        value: 'Aguacate Cocktail',
-        label: 'Aguacate Cocktail'
+        value: "Aguacate Cocktail",
+        label: "Aguacate Cocktail",
       },
       {
-        value: 'Aguacate Fuerte',
-        label: 'Aguacate Fuerte'
+        value: "Aguacate Fuerte",
+        label: "Aguacate Fuerte",
       },
       {
-        value: 'Aguacate Gween',
-        label: 'Aguacate Gween'
+        value: "Aguacate Gween",
+        label: "Aguacate Gween",
       },
       {
-        value: 'Aguacate Hass',
-        label: 'Aguacate Hass'
+        value: "Aguacate Hass",
+        label: "Aguacate Hass",
       },
       {
-        value: 'Aguacate Lamb Hass',
-        label: 'Aguacate Lamb Hass'
+        value: "Aguacate Lamb Hass",
+        label: "Aguacate Lamb Hass",
       },
       {
-        value: 'Aguacate Maluma Hass',
-        label: 'Aguacate Maluma Hass'
+        value: "Aguacate Maluma Hass",
+        label: "Aguacate Maluma Hass",
       },
       {
-        value: 'Aguacate Melón',
-        label: 'Aguacate Melón'
+        value: "Aguacate Melón",
+        label: "Aguacate Melón",
       },
       {
-        value: 'Aguacate Pinkerton',
-        label: 'Aguacate Pinkerton'
+        value: "Aguacate Pinkerton",
+        label: "Aguacate Pinkerton",
       },
       {
-        value: 'Aguacate Reed',
-        label: 'Aguacate Reed'
+        value: "Aguacate Reed",
+        label: "Aguacate Reed",
       },
       {
-        value: 'Aguacate Zutano',
-        label: 'Aguacate Zutano'
+        value: "Aguacate Zutano",
+        label: "Aguacate Zutano",
       },
     ],
   },
@@ -134,12 +134,20 @@ const EditableCell = ({
   children,
   ...restProps
 }) => {
-  const inputNode = inputType === "date" ? <DatePicker/> 
-                    : inputType === "crop_type" ? <Cascader placeholder="Elija el tipo de cultivo"
-                                                    style={{ width: '100%' }} options={cropTypesOptions}/>
-                    : <InputNumber />;
+  const inputNode =
+    inputType === "date" ? (
+      <DatePicker />
+    ) : inputType === "crop_type" ? (
+      <Cascader
+        placeholder="Elija el tipo de cultivo"
+        style={{ width: "100%" }}
+        options={cropTypesOptions}
+      />
+    ) : (
+      <InputNumber />
+    );
 
-                    return (
+  return (
     <td {...restProps}>
       {editing ? (
         <Form.Item
@@ -164,10 +172,9 @@ const EditableCell = ({
 };
 
 const EditableTable = () => {
-
   const [session] = useSession();
   const [form] = Form.useForm();
-  const [data, setData] = useState();  
+  const [data, setData] = useState();
   const [modifiedRows, setModifiedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
   const [editingKey, setEditingKey] = useState("");
@@ -232,14 +239,15 @@ const EditableTable = () => {
       setData(newData);
     }
 
-    var index = deletedRows.findIndex(r => r.uid == row.uid);
-    index > -1 ? setDeletedRows(deletedRows.map(r => r.uid !== row.uid ? r : row)) : 
-    setDeletedRows(deletedRows.concat(row));
+    var index = deletedRows.findIndex((r) => r.uid == row.uid);
+    index > -1
+      ? setDeletedRows(deletedRows.map((r) => (r.uid !== row.uid ? r : row)))
+      : setDeletedRows(deletedRows.concat(row));
   };
 
   const handleSave = async (key) => {
     try {
-      const row = await form.validateFields();   
+      const row = await form.validateFields();
       const newData = [...data];
       const rowToSave = newData.findIndex((item) => item.key === key);
       if (rowToSave != -1) {
@@ -267,9 +275,12 @@ const EditableTable = () => {
       row.date = row.date.format("YYYY-MM-DD");
       row.crop_type = row.crop_type[1];
 
-      var index = modifiedRows.findIndex(r => r.uid == row.uid);
-      index > -1 ? setModifiedRows(modifiedRows.map(r => r.uid !== row.uid ? r : row)) : 
-        setModifiedRows(modifiedRows.concat(row));
+      var index = modifiedRows.findIndex((r) => r.uid == row.uid);
+      index > -1
+        ? setModifiedRows(
+            modifiedRows.map((r) => (r.uid !== row.uid ? r : row))
+          )
+        : setModifiedRows(modifiedRows.concat(row));
 
       setData(newData);
       setEditingKey("");
@@ -279,46 +290,46 @@ const EditableTable = () => {
   };
 
   const handleCommit = async () => {
-
     const rowChanges = [modifiedRows, deletedRows];
-    await fetch(
-      `http://0.0.0.0:8001/api/v1/data/apply`,
-      {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
-        },
-        body: JSON.stringify(rowChanges),
-      }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
+    await fetch(`http://0.0.0.0:8001/api/v1/data/apply`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify(rowChanges),
     })
-    .then((result) => { 
-      if (result.detail == "Upsert data error") {
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (result.detail == "Upsert data error") {
+          notification["error"]({
+            message:
+              "Se ha producido un error al añadir o modificar los datos.",
+          });
+        } else if (result.detail == "Delete data error") {
+          notification["error"]({
+            message: "Se ha producido un error al eliminar los datos.",
+          });
+        } else {
+          notification.open({
+            message:
+              "Se han aplicado los cambios correctamente. Por favor recargue la página.",
+          });
+        }
+      })
+      .catch((err) => {
         notification["error"]({
-          message: "Se ha producido un error al añadir o modificar los datos.",
+          message: "Ha ocurrido un error al conectarse con el servidor",
+          description: `${err}`,
         });
-      } else if (result.detail == "Delete data error") {
-        notification["error"]({
-          message: "Se ha producido un error al eliminar los datos.",
-        });
-      } else {
-        notification.open({
-          message: "Se han aplicado los cambios correctamente. Por favor recargue la página.",
-        });
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
       });
-    });
-
   };
 
   const columns = [
@@ -328,17 +339,17 @@ const EditableTable = () => {
       editable: true,
       render: (_, record) => {
         if (record.children) {
-          return record.date.format('YYYY-MM');
+          return record.date.format("YYYY-MM");
         } else {
-          return record.date.format('YYYY-MM-DD');
+          return record.date.format("YYYY-MM-DD");
         }
-      }
+      },
     },
     {
       title: "Tipo de cultivo",
       dataIndex: "crop_type",
       editable: true,
-      render: (_, record) => record.crop_type[1]
+      render: (_, record) => record.crop_type[1],
     },
     {
       title: "Kilos",
@@ -361,7 +372,7 @@ const EditableTable = () => {
               onClick={() => handleSave(record.key)}
               style={{
                 marginRight: 8,
-                padding: 0
+                padding: 0,
               }}
             >
               Guardar
@@ -413,51 +424,54 @@ const EditableTable = () => {
   };
 
   useEffect(async () => {
-    await fetch(
-      `http://0.0.0.0:8001/api/v1/data/get`,
-      {
-        method: "GET",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.accessToken}`
-        },
-      }
-    ).then((res) => {
-      if ((res.ok) || (res.status == 404)) { 
-        return res.json();
-      }
-      return res.text().then(text => {throw new Error(text)})
+    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
     })
-    .then((result) => { 
-      if (result.detail == "Specified data not found") {
+      .then((res) => {
+        if (res.ok || res.status == 404) {
+          return res.json();
+        }
+        return res.text().then((text) => {
+          throw new Error(text);
+        });
+      })
+      .then((result) => {
+        if (result.detail == "Specified data not found") {
+          notification["error"]({
+            message: "No se han encontrado los datos.",
+            description: `${err}`,
+          });
+        } else {
+          result = result.data;
+          var id, i, j;
+          for (i = 0; i < result.length; i++) {
+            id = nanoid(8);
+            result[i]["key"] = id;
+            for (j = 0; j < result[i].children.length; j++) {
+              result[i].children[j]["key"] = result[i].children[j]["uid"];
+              result[i].children[j]["date"] = moment(
+                result[i].children[j]["date"]
+              );
+              result[i].children[j]["crop_type"] = parseToCascader(
+                result[i].children[j]["crop_type"]
+              );
+            }
+          }
+          console.log(result);
+          setData(result);
+        }
+      })
+      .catch((err) => {
         notification["error"]({
-          message: "No se han encontrado los datos.",
+          message: "Ha ocurrido un error al conectarse con el servidor",
           description: `${err}`,
         });
-      } else {
-        result = result.data
-        var id, i, j;
-        for (i = 0; i < result.length; i++) {
-          id = nanoid(8);
-          result[i]["key"] = id;
-          for (j = 0; j < result[i].children.length; j++) {
-            result[i].children[j]["key"] = result[i].children[j]["uid"];
-            result[i].children[j]["date"] = moment(result[i].children[j]["date"]);
-            result[i].children[j]["crop_type"] = parseToCascader(result[i].children[j]["crop_type"]);
-          }
-        }
-        console.log(result);
-        setData(result);
-      }
-    })
-    .catch((err) => {
-      notification["error"]({
-        message: "Ha ocurrido un error al conectarse con el servidor",
-        description: `${err}`,
       });
-    });
-  }, [])
-
+  }, []);
 
   return (
     <Form form={form} component={false}>

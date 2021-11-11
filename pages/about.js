@@ -8,7 +8,7 @@ const About = () => {
   return (
     <BaseLayout>
       <PageHeader className="site-page-header"></PageHeader>
-      <Row justify="space-around" gutter={[48, 24]}>
+      <Row justify="space-around" gutter={[24, 24]}>
         <Col sm={8} xs={24}>
           <a href="https://www.trops.es">
             <Card
