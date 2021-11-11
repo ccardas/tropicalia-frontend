@@ -291,7 +291,7 @@ const EditableTable = () => {
 
   const handleCommit = async () => {
     const rowChanges = [modifiedRows, deletedRows];
-    await fetch(`http://0.0.0.0:8001/api/v1/data/apply`, {
+    await fetch(process.nv.NEXT_PUBLIC_API_URL + `/api/v1/data/apply`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -337,6 +337,9 @@ const EditableTable = () => {
       title: "Fecha",
       dataIndex: "date",
       editable: true,
+      sorter: {
+        compare: (a, b) => a.date.diff(b.date),
+      },
       render: (_, record) => {
         if (record.children) {
           return record.date.format("YYYY-MM");
@@ -424,7 +427,7 @@ const EditableTable = () => {
   };
 
   useEffect(async () => {
-    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
+    await fetche(process.nv.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
