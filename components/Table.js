@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/client";
 import {
+  Cascader,
   Table,
-  Input,
   Typography,
   Popconfirm,
   Form,
@@ -10,57 +10,119 @@ import {
   Divider,
   Row,
   Col,
-  notification
+  notification,
+  DatePicker,
+  InputNumber
 } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
+import moment from 'moment';
+import { nanoid } from 'nanoid';
 
-// const [data, setData] = useState([
-//   {
-//     key: "2010-10",
-//     date: "2010-10",
-//     crop_type: "Mango Keitt",
-//     yield_values: 14,
-//     children: [
-//       {
-//         key: 1,
-//         uid: 1,
-//         date: "2010-10-14",
-//         crop_type: "Mango Keitt",
-//         yield_values: 9,
-//       },
-//       {
-//         key: 2,
-//         uid: 2,
-//         date: "2010-10-23",
-//         crop_type: "Mango Keitt",
-//         yield_values: 5,
-//       },
-//     ],
-//   },
-//   {
-//     key: 15,
-//     date: "2013-10",
-//     crop_type: "Mango Tommy Atkins",
-//     yield_values: 9,
-//     children: [
-//       {
-//         key: 3,
-//         uid: 3,
-//         date: "2013-10-01",
-//         crop_type: "Mango Tommy Atkins",
-//         yield_values: 4,
-//       },
-//       {
-//         key: 4,
-//         uid: 4,
-//         date: "2013-10-10",
-//         crop_type: "Mango Tommy Atkins",
-//         yield_values: 5,
-//       },
-//     ],
-//   },
-// ]);
+const cropTypesOptions = [
+  {
+    value: 'mango',
+    label: 'Mango',
+    children: [
+      {
+        value: 'Mango',
+        label: 'Todas las variedades'
+      },
+      {
+        value: 'Mango Genérico',
+        label: 'Mango Genérico'
+      },
+      {
+        value: 'Mango Irwin',
+        label: 'Mango Irwin'
+      },
+      {
+        value: 'Mango Keitt',
+        label: 'Mango Keitt'
+      },
+      {
+        value: 'Mango Kent',
+        label: 'Mango Kent'
+      },
+      {
+        value: 'Mango Manzanillo',
+        label: 'Mango Manzanillo'
+      },
+      {
+        value: 'Mango Osteen',
+        label: 'Mango Osteen'
+      },
 
+      {
+        value: 'Mango Palmer',
+        label: 'Mango Palmer'
+      },
+
+      {
+        value: 'Mango Sensation',
+        label: 'Mango Sensation'
+      },
+
+      {
+        value: 'Mango Tommy Atkins',
+        label: 'Mango Tommy Atkins'
+      },
+    ],
+  },
+  {
+    value: 'aguacate',
+    label: 'Aguacate',
+    children: [
+      {
+        value: 'Aguacate',
+        label: 'Todas las variedades'
+      },
+      {
+        value: 'Aguacate Bacon',
+        label: 'Aguacate Bacon'
+      },
+      {
+        value: 'Aguacate Cocktail',
+        label: 'Aguacate Cocktail'
+      },
+      {
+        value: 'Aguacate Fuerte',
+        label: 'Aguacate Fuerte'
+      },
+      {
+        value: 'Aguacate Gween',
+        label: 'Aguacate Gween'
+      },
+      {
+        value: 'Aguacate Hass',
+        label: 'Aguacate Hass'
+      },
+      {
+        value: 'Aguacate Lamb Hass',
+        label: 'Aguacate Lamb Hass'
+      },
+      {
+        value: 'Aguacate Maluma Hass',
+        label: 'Aguacate Maluma Hass'
+      },
+      {
+        value: 'Aguacate Melón',
+        label: 'Aguacate Melón'
+      },
+      {
+        value: 'Aguacate Pinkerton',
+        label: 'Aguacate Pinkerton'
+      },
+      {
+        value: 'Aguacate Reed',
+        label: 'Aguacate Reed'
+      },
+      {
+        value: 'Aguacate Zutano',
+        label: 'Aguacate Zutano'
+      },
+    ],
+  },
+];
 
 const EditableCell = ({
   editing,
@@ -72,8 +134,12 @@ const EditableCell = ({
   children,
   ...restProps
 }) => {
-  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-  return (
+  const inputNode = inputType === "date" ? <DatePicker/> 
+                    : inputType === "crop_type" ? <Cascader placeholder="Elija el tipo de cultivo"
+                                                    style={{ width: '100%' }} options={cropTypesOptions}/>
+                    : <InputNumber />;
+
+                    return (
     <td {...restProps}>
       {editing ? (
         <Form.Item
@@ -109,10 +175,9 @@ const EditableTable = () => {
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
-    console.log(modifiedRows);
     form.setFieldsValue({
-      date: "",
-      crop_type: "",
+      date: moment(),
+      crop_type: [],
       yield_values: "",
       ...record,
     });
@@ -127,11 +192,11 @@ const EditableTable = () => {
 
   const handleAdd = () => {
     const newData = [...data];
-    const id = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
+    const id = nanoid(8);
     const newRow = {
       key: id,
       uid: id,
-      date: "",
+      date: moment(undefined),
       crop_type: "",
       yield_values: "",
     };
@@ -141,11 +206,15 @@ const EditableTable = () => {
   };
 
   const handleDelete = (key) => {
+    var row = null;
     var newData = [...data];
     const rowToDelete = newData.findIndex((item) => item.key === key);
 
     if (rowToDelete != -1) {
-      setDeletedRows(deletedRows.concat(newData[rowToDelete]));
+      row = newData[rowToDelete];
+      row.date = row.date.format("YYYY-MM-DD");
+      row.crop_type = row.crop_type[1];
+
       newData = newData.filter((item) => item.key !== key);
       setData(newData);
     } else {
@@ -155,26 +224,33 @@ const EditableTable = () => {
       const indexChild = newData[index].children.findIndex(
         (child) => key === child.key
       );
-      setDeletedRows(deletedRows.concat(newData[index].children[indexChild]));
+      row = newData[index].children[indexChild];
+      row.date = row.date.format("YYYY-MM-DD");
+      row.crop_type = row.crop_type[1];
+
       newData[index].children.splice(indexChild, 1);
       setData(newData);
     }
+
+    var index = deletedRows.findIndex(r => r.uid == row.uid);
+    index > -1 ? setDeletedRows(deletedRows.map(r => r.uid !== row.uid ? r : row)) : 
+    setDeletedRows(deletedRows.concat(row));
   };
 
   const handleSave = async (key) => {
     try {
-      const row = await form.validateFields();
+      const row = await form.validateFields();   
       const newData = [...data];
       const rowToSave = newData.findIndex((item) => item.key === key);
-
       if (rowToSave != -1) {
         newData.splice(rowToSave, 1, { ...newData[rowToSave], ...row });
-        setModifiedRows(modifiedRows.concat(newData[rowToSave]));
+
+        row.key = newData[rowToSave].key;
+        row.uid = newData[rowToSave].uid;
       } else {
         const index = newData.findIndex(
           (item) => item.children.findIndex((child) => key === child.key) > -1
         );
-
         const indexChild = newData[index].children.findIndex(
           (child) => key === child.key
         );
@@ -184,8 +260,17 @@ const EditableTable = () => {
           ...row,
         });
 
-        setModifiedRows(modifiedRows.concat(itemChildren[indexChild]));
+        row.key = itemChildren[indexChild].key;
+        row.uid = itemChildren[indexChild].uid;
       }
+
+      row.date = row.date.format("YYYY-MM-DD");
+      row.crop_type = row.crop_type[1];
+
+      var index = modifiedRows.findIndex(r => r.uid == row.uid);
+      index > -1 ? setModifiedRows(modifiedRows.map(r => r.uid !== row.uid ? r : row)) : 
+        setModifiedRows(modifiedRows.concat(row));
+
       setData(newData);
       setEditingKey("");
     } catch (errInfo) {
@@ -234,8 +319,6 @@ const EditableTable = () => {
       });
     });
 
-
-
   };
 
   const columns = [
@@ -243,11 +326,19 @@ const EditableTable = () => {
       title: "Fecha",
       dataIndex: "date",
       editable: true,
+      render: (_, record) => {
+        if (record.children) {
+          return record.date.format('YYYY-MM');
+        } else {
+          return record.date.format('YYYY-MM-DD');
+        }
+      }
     },
     {
       title: "Tipo de cultivo",
       dataIndex: "crop_type",
       editable: true,
+      render: (_, record) => record.crop_type[1]
     },
     {
       title: "Kilos",
@@ -308,7 +399,7 @@ const EditableTable = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "date" ? "crop_type" : "yield_values",
+        inputType: col.dataIndex,
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -316,6 +407,10 @@ const EditableTable = () => {
     };
   });
 
+  const parseToCascader = (child) => {
+    var parent = child.split(" ")[0].toLowerCase();
+    return [parent, child];
+  };
 
   useEffect(async () => {
     await fetch(
@@ -343,10 +438,12 @@ const EditableTable = () => {
         result = result.data
         var id, i, j;
         for (i = 0; i < result.length; i++) {
-          id = (Math.random() * 0xfffff * 1000000).toString(16).slice(0, 8);
+          id = nanoid(8);
           result[i]["key"] = id;
           for (j = 0; j < result[i].children.length; j++) {
             result[i].children[j]["key"] = result[i].children[j]["uid"];
+            result[i].children[j]["date"] = moment(result[i].children[j]["date"]);
+            result[i].children[j]["crop_type"] = parseToCascader(result[i].children[j]["crop_type"]);
           }
         }
         console.log(result);

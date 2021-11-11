@@ -19,7 +19,6 @@ const Dashboard = () => {
   // if no session exists, display access denied message
   if (!session) return <BaseLayout><AccessDenied /></BaseLayout>;
 
-  //TODO: display options based on roles.
   return (
     <BaseLayout>
       <PageHeader className="site-page-header">
