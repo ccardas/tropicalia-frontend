@@ -13,7 +13,7 @@ export default function MyApp({ Component, pageProps }) {
       <Provider
         session={pageProps.session}
         options={{
-          basePath: `/api/auth`,
+          basePath: `/tropicalia/api/auth`,
         }}
       >
         <Head>

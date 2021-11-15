@@ -291,7 +291,7 @@ const EditableTable = () => {
 
   const handleCommit = async () => {
     const rowChanges = [modifiedRows, deletedRows];
-    await fetch(process.nv.NEXT_PUBLIC_API_URL + `/api/v1/data/apply`, {
+    await fetch(`/tropicalia/fastapi/api/v1/data/apply`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -427,7 +427,7 @@ const EditableTable = () => {
   };
 
   useEffect(async () => {
-    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
+    await fetch(`/tropicalia/fastapi/api/v1/data/get`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -454,6 +454,9 @@ const EditableTable = () => {
           for (i = 0; i < result.length; i++) {
             id = nanoid(8);
             result[i]["key"] = id;
+            result[i]["crop_type"] = parseToCascader(result[i]["crop_type"]);
+            result[i]["date"] = moment(result[i]["date"]);
+            result
             for (j = 0; j < result[i].children.length; j++) {
               result[i].children[j]["key"] = result[i].children[j]["uid"];
               result[i].children[j]["date"] = moment(

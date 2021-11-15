@@ -25,7 +25,7 @@ const Navbar = () => {
           <Col>
             <div className="logo">
               <Link href="/">
-                <img src="tropical-ia-02.svg" alg="TROPICAL-IA logo"></img>
+                <img src="/tropicalia/tropical-ia-02.svg" alg="TROPICAL-IA logo"></img>
               </Link>
             </div>
             <Menu mode="horizontal" defaultSelectedKeys={router.pathname}>

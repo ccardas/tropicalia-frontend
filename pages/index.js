@@ -21,14 +21,14 @@ const Home = () => {
           <img
             alt="avocado"
             style={{ height: "19em", border: "1px solid black" }}
-            src="/avocado.png"
+            src="/tropicalia/avocado.png"
           />
         </Col>
         <Col>
           <img
             alt="mango"
             style={{ height: "19em", border: "1px solid black" }}
-            src="/mango.png"
+            src="/tropicalia/mango.png"
           />
         </Col>
       </Row>

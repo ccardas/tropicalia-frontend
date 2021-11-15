@@ -15,7 +15,7 @@ const About = () => {
               style={{ padding: "1em" }}
               hoverable
               cover={
-                <img alt="trops" style={{ height: "18em" }} src="/trops.svg" />
+                <img alt="trops" style={{ height: "18em" }} src="/tropicalia/trops.svg" />
               }
             >
               <Meta title="TROPS, SAT 2803" description="www.trops.es" />
@@ -28,7 +28,7 @@ const About = () => {
               style={{ padding: "1em" }}
               hoverable
               cover={
-                <img alt="khaos" style={{ height: "18em" }} src="/khaos.svg" />
+                <img alt="khaos" style={{ height: "18em" }} src="/tropicalia/khaos.svg" />
               }
             >
               <Meta
@@ -44,7 +44,7 @@ const About = () => {
               style={{ padding: "1em" }}
               hoverable
               cover={
-                <img alt="uma" style={{ height: "18em" }} src="/uma.svg" />
+                <img alt="uma" style={{ height: "18em" }} src="/tropicalia/uma.svg" />
               }
             >
               <Meta title="Universidad de Málaga" description="www.uma.es" />

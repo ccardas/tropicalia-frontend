@@ -269,8 +269,7 @@ const RunModel = () => {
     setTraining(true);
     const isMonthly = value == 1 ? false : true;
     await fetch(
-      process.env.NEXT_PUBLIC_API_URL +
-        `/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
+        `/tropicalia/fastapi/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
       {
         method: "GET",
         headers: {
@@ -322,8 +321,7 @@ const RunModel = () => {
 
   const doCheckModel = async (m, ct) => {
     await fetch(
-      process.env.NEXT_PUBLIC_API_URL +
-        `/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
+      `/tropicalia/fastapi/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
       {
         method: "GET",
         headers: {
@@ -429,16 +427,18 @@ const RunModel = () => {
         </Button>
 
         {dataChart && seriesChart && axesChart && (
-          <Chart
-            data={dataChart}
-            series={seriesChart}
-            axes={axesChart}
-            tooltip
-            style={{
-              width: "100%",
-              height: "400px",
-            }}
-          />
+          <div style={{
+            width: "100%",
+            height: "calc(100vh - 400px)",
+          }}>
+            <Chart
+              data={dataChart}
+              series={seriesChart}
+              axes={axesChart}
+              tooltip
+            />
+          </div>
+          
         )}
 
         {tableData && tableCols && (
