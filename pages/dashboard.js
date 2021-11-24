@@ -5,7 +5,7 @@ import RunModel from "../components/RunModel";
 import TrainModel from "../components/TrainModel";
 
 import { useSession } from "next-auth/client";
-import { Divider, PageHeader, Typography, Tabs } from "antd";
+import { PageHeader, Typography, Tabs } from "antd";
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;

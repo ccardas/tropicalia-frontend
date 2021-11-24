@@ -13,6 +13,7 @@ import {
   notification,
   DatePicker,
   InputNumber,
+  Spin
 } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
 import moment from "moment";
@@ -178,6 +179,7 @@ const EditableTable = () => {
   const [modifiedRows, setModifiedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
   const [editingKey, setEditingKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -427,6 +429,7 @@ const EditableTable = () => {
   };
 
   useEffect(async () => {
+    setIsLoading(true);
     await fetch(`/tropicalia/fastapi/api/v1/data/get`, {
       method: "GET",
       headers: {
@@ -467,7 +470,6 @@ const EditableTable = () => {
               );
             }
           }
-          console.log(result);
           setData(result);
         }
       })
@@ -477,6 +479,7 @@ const EditableTable = () => {
           description: `${err}`,
         });
       });
+      setIsLoading(false);
   }, []);
 
   return (
@@ -505,6 +508,8 @@ const EditableTable = () => {
           </Button>
         </Col>
       </Row>
+
+      {isLoading && <Spin />}
 
       <Table
         components={{

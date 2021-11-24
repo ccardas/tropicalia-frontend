@@ -186,6 +186,9 @@ const RunModel = () => {
         secondary: rawForecastData[i].yield_values,
       });
     }
+    console.log("Pred data chart: ", predData);
+    console.log("Ly data chart: ", lyData);
+    console.log("Forecast data chart: ", forecastData);
 
     const chart = [
       {
@@ -249,7 +252,7 @@ const RunModel = () => {
     ];
     len = rawForecastData.length;
     for (i = 0; i < len; i++) {
-      real = rawLyData[rawLyData.length - i - 1].yield_values;
+      real = rawLyData[rawLyData.length - len + i].yield_values;
       forecast = rawForecastData[i].yield_values;
 
       obj = {
