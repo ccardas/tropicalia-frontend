@@ -157,6 +157,10 @@ const RunModel = () => {
     setCropType(e[e.length - 1]);
   }
 
+  function round(value, precision = 2) {
+    return Number(Math.round(value + 'e' + precision) + 'e-' + precision);
+  }
+
   function getDataChart(rawLyData, rawPredData, rawForecastData) {
     var lyData = [];
     var predData = [];
@@ -186,9 +190,6 @@ const RunModel = () => {
         secondary: rawForecastData[i].yield_values,
       });
     }
-    console.log("Pred data chart: ", predData);
-    console.log("Ly data chart: ", lyData);
-    console.log("Forecast data chart: ", forecastData);
 
     const chart = [
       {
@@ -258,9 +259,9 @@ const RunModel = () => {
       obj = {
         key: i,
         month: rawForecastData[i].date.split("-")[1],
-        real: real,
-        forecast: forecast,
-        difference: Math.abs(real - forecast),
+        real: round(real),
+        forecast: round(forecast),
+        difference: round(Math.abs(real - forecast)),
       };
       dataSource.push(obj);
     }
@@ -272,7 +273,7 @@ const RunModel = () => {
     setTraining(true);
     const isMonthly = value == 1 ? false : true;
     await fetch(
-        `/tropicalia/fastapi/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
+      process.env.NEXT_PUBLIC_API_URL + `/api/v1/algorithm/predict?algorithm=${model}&crop_type=${cropType}&is_monthly=${isMonthly}`,
       {
         method: "GET",
         headers: {
@@ -324,7 +325,7 @@ const RunModel = () => {
 
   const doCheckModel = async (m, ct) => {
     await fetch(
-      `/tropicalia/fastapi/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
+      process.env.NEXT_PUBLIC_API_URL + `/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
       {
         method: "GET",
         headers: {

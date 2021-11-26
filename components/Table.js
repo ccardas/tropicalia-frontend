@@ -293,7 +293,7 @@ const EditableTable = () => {
 
   const handleCommit = async () => {
     const rowChanges = [modifiedRows, deletedRows];
-    await fetch(`/tropicalia/fastapi/api/v1/data/apply`, {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/apply`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -430,7 +430,7 @@ const EditableTable = () => {
 
   useEffect(async () => {
     setIsLoading(true);
-    await fetch(`/tropicalia/fastapi/api/v1/data/get`, {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/v1/data/get`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

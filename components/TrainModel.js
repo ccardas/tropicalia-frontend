@@ -140,7 +140,7 @@ const TrainModel = () => {
   const doTrain = async () => {
     setTraining(true);
     await fetch(
-      `/tropicalia/fastapi/api/v1/algorithm/train?algorithm=${model}&crop_type=${cropType}`,
+      process.env.NEXT_PUBLIC_API_URL + `/api/v1/algorithm/train?algorithm=${model}&crop_type=${cropType}`,
       {
         method: "GET",
         headers: {
@@ -177,7 +177,7 @@ const TrainModel = () => {
 
   const doCheckModel = async (m, ct) => {
     await fetch(
-      `/tropicalia/fastapi/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
+      process.env.NEXT_PUBLIC_API_URL + `/api/v1/algorithm/check?algorithm=${m}&crop_type=${ct}`,
       {
         method: "GET",
         headers: {

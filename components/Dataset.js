@@ -11,6 +11,7 @@ const Dataset = () => {
       <Space style={{ width: "100%" }} direction="vertical">
         <Title level={2}>Visualización e interacción con los datos.</Title>
         <ImportTabularData />
+        <Divider />
         <Text>
           En la siguiente tabla podrá añadir, modificar y eliminar datos.{" "}
         </Text>
