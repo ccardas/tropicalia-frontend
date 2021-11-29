@@ -1,15 +1,14 @@
-FROM mhart/alpine-node AS builder
+FROM mhart/alpine-node:16.4.2 AS builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-RUN yarn install --frozen-lockfile
+RUN npm i
 
 COPY . .
 
-RUN yarn build
-RUN yarn install --production --frozen-lockfile
+RUN npm run build
 
 # Stage 2: And then copy over node_modules, etc from that stage to the smaller base image
 FROM mhart/alpine-node:16.4.2 as production
