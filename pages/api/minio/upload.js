@@ -1,9 +1,8 @@
 const Minio = require('minio');
 
 var minioClient = new Minio.Client({
-    endPoint: process.env.MINIO_HOST,
-    port: parseInt(process.env.MINIO_PORT),
-    useSSL: false,
+    endPoint: process.env.MINIO_ENDPOINT,
+    useSSL: process.env.MINIO_USE_SSL,
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY
 })
@@ -15,8 +14,8 @@ export const config = {
 };
   
 export default async function handler(req, res) {
-    const bucketName = "excel"
-    const objectName = req.query["name"];
+    const bucketName = "tropicalia"
+    const objectName = "excel/" + req.query["name"];
     try {
         // creates presigned url
         minioClient.presignedPutObject(bucketName, objectName, (err, url) => {
