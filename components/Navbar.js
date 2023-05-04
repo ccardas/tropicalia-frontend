@@ -9,6 +9,7 @@ import {
   AppstoreOutlined,
   HomeOutlined,
   InfoCircleOutlined,
+  ArrowRightOutlined
 } from "@ant-design/icons";
 
 const { Header, Content } = Layout;
@@ -38,6 +39,13 @@ const Navbar = () => {
                 disabled={!session}
               >
                 <Link href="/dashboard">Cuadro de mando</Link>
+              </Menu.Item>
+              <Menu.Item
+                key="/crops"
+                icon={<ArrowRightOutlined />}
+                disabled={!session}
+              >
+                <Link href="/crops">Cultivos</Link>
               </Menu.Item>
               <Menu.Item key="/about" icon={<InfoCircleOutlined />}>
                 <Link href="/about">Acerca de</Link>
